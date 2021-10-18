@@ -1,0 +1,246 @@
+/* Global CSS Variables: https://www.w3schools.com/css/css3_variables.asp */
+/* Reference these in your CSS to get the same color as the mockups */
+:root {
+	--sidebar-width: 240px;
+	--text-color: rgb(50, 50, 50);
+	--background-color: #ffffff;
+	--light-background-color: #f4f4f4;
+	--nav-bar-color: #ffffff;
+	--selected-color: rgb(229, 241, 253);
+	--action-text-color: #ffffff;
+	--action-color: rgb(58, 99, 197);
+	--border-color: darkgray;
+}
+
+.side-bar {
+	display: flex;
+	flex-direction: column;
+	width: var(--sidebar-width);
+	height: 100vh;
+	border-right: 1.5px solid var(--border-color);
+}
+
+.row {
+	display: flex;
+	padding: 5px;
+	height: 32px;
+}
+
+.side-header {
+	border-bottom: 1.5px solid var(--border-color);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.side-search {
+	padding-left: 10px;
+	padding-right: 10px;
+	align-items: center;
+	border-bottom: 1.5px dotted var(--border-color);
+}
+
+.side-note-list {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: scroll;
+	overflow-x: hidden;
+}
+
+.side-note {
+	flex-direction: column;
+	justify-content: space-around;
+	border-bottom: 1.5px dotted var(--border-color);
+	cursor: pointer;
+	height: 40px;
+}
+
+.side-note.selected {
+	background-color: var(--selected-color);
+}
+
+.title {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-weight: 500;
+	font-size: medium;
+}
+
+.search-tab {
+	border: none;
+	background: transparent;
+	margin-left: 5px;
+	width: 100%;
+}
+
+.layout {
+	display: flex;
+	flex-direction: row;
+	width: 100vw;
+	height: 100vh;
+}
+
+.main-body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.main-header {
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1.5px solid var(--border-color);
+	flex: none;
+}
+.main-content {
+	flex: 1;
+	resize: none;
+	margin: 5px;
+
+	border: none;
+}
+
+.main-decoder {
+	flex: 1;
+
+	background-color: rgb(243, 241, 241);
+	padding: 5px;
+	overflow: scroll;
+}
+
+.material-icons {
+	cursor: pointer;
+}
+::-webkit-scrollbar {
+	display: none;
+}
+
+body {
+	background-color: var(--background-color);
+	color: var(--text-color);
+	margin: 0;
+	height: 100vh;
+	-ms-overflow-style: none;
+}
+
+html {
+	height: 100vh;
+}
+
+img {
+	width: 32px;
+	height: 32px;
+	border-radius: 16px;
+	cursor: pointer;
+}
+
+button,
+input[type="submit"] {
+	cursor: pointer;
+}
+
+textarea:focus,
+input:focus {
+	outline: none;
+}
+
+.logo {
+	margin: 0;
+	font-size: large;
+	font-weight: 500;
+}
+
+.modal-background {
+	display: flex;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+	background-color: rgb(255, 255, 255);
+	border-radius: 20px;
+	box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+}
+
+.modal-background.show {
+	padding: 0;
+}
+
+.modal.show {
+	display: flex;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+	border-radius: 0;
+	box-shadow: none;
+	padding: 0;
+}
+
+.modal-inner {
+	width: 350px;
+	padding: 15px;
+}
+
+.modal-header {
+	margin-top: 10px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.modal-image {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	margin-right: 5px;
+	margin-left: 5px;
+
+	font-weight: 600;
+}
+
+.modal-info {
+	position: relative;
+	font-size: large;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.modal-input {
+	position: relative;
+	padding: 7px;
+	width: 100%;
+	font-size: small;
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: 600;
+	margin-top: 15px;
+}
+
+.save-button {
+	color: var(--action-text-color);
+	font-weight: 400;
+	background-color: var(--action-color);
+	border: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 25px;
+	padding-right: 25px;
+	border-radius: 12px;
+}
+.selectable-text {
+	cursor: pointer;
+}
+
+.selectable-text:hover {
+	text-decoration: underline;
+}
