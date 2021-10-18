@@ -1,15 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Author = require("./models/author");
-const Book = require("./models/book");
-const BookInstance = require("./models/bookinstance");
+const Note = require("./models/Note");
+const User = require("./models/User");
 
 const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 //Set up mongoose connection
-var mongoDB = "mongodb://localhost:27017/LibraryExample"; // insert your database URL here
+var mongoDB = "mongodb://localhost:27017/MyNote"; // insert your database URL here
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
@@ -35,29 +34,19 @@ app.use((req, res, next) => {
 });
 
 // There can be multiple middleware – this one only triggers if this route is accessed
-app.use("/api/authors/:id", (req, res, next) => {
+app.use("/api/users/:id", (req, res, next) => {
 	console.log("Request involving a specific author");
 	next(); // Try commenting out this next() and accessing a specific author page
 });
 
-// Using an async function to be able to use the "await" functionality below, which makes
-// the find command run synchronously.
 app.get(
-	"/api/authors",
-	wrapAsync(async function (req, res) {
-		const authors = await Author.find({});
-		res.json(authors);
-	})
-);
-
-app.get(
-	"/api/authors/:id",
+	"/api/users/:id",
 	wrapAsync(async function (req, res, next) {
 		let id = req.params.id;
 		if (mongoose.isValidObjectId(id)) {
-			const author = await Author.findById(id);
-			if (author) {
-				res.json(author);
+			const user = await User.findById(id);
+			if (user) {
+				res.json(user);
 				return;
 			} else {
 				// The thrown error will be handled by the error handling middleware
@@ -69,18 +58,23 @@ app.get(
 	})
 );
 
-app.delete(
-	"/api/authors/:id",
+app.post(
+	"/api/users",
 	wrapAsync(async function (req, res) {
-		const id = req.params.id;
-		const result = await Author.findByIdAndDelete(id);
-		console.log("Deleted successfully: " + result);
-		res.json(result);
+		console.log("Posted with body: " + JSON.stringify(req.body));
+		const newUser = new User({
+			name: req.body.name,
+			email: req.body.email,
+			location: req.body.location,
+		});
+		// Calling save is needed to save it to the database given we aren't using a special method like the update above
+		await newUser.save();
+		res.json(newUser);
 	})
 );
 
 app.put(
-	"/api/authors/:id",
+	"/api/users/:id",
 	wrapAsync(async function (req, res) {
 		const id = req.params.id;
 		console.log(
@@ -88,11 +82,12 @@ app.put(
 		);
 		// This below method automatically saves it to the database
 		// findByIdAndUpdate by default does not run the validators, so we need to set the option to enable it.
-		await Author.findByIdAndUpdate(
+		await User.findByIdAndUpdate(
 			id,
 			{
-				first_name: req.body.first_name,
-				family_name: req.body.family_name,
+				name: req.body.name,
+				email: req.body.email,
+				location: req.body.location,
 			},
 			{ runValidators: true }
 		);
@@ -102,38 +97,74 @@ app.put(
 	})
 );
 
+app.delete(
+	"/api/users/:id",
+	wrapAsync(async function (req, res) {
+		const id = req.params.id;
+		const result = await User.findByIdAndDelete(id);
+		console.log("Deleted successfully: " + result);
+		res.json(result);
+	})
+);
+
+app.use("/api/notes/:id", (req, res, next) => {
+	console.log("Request involving a specific author");
+	next(); // Try commenting out this next() and accessing a specific author page
+});
+
+app.get(
+	"/api/notes",
+	wrapAsync(async function (req, res) {
+		const notes = await Note.find({});
+		res.json(notes);
+	})
+);
+
 // The React app does not call the below methods, but these are further examples of using Express
 app.post(
-	"/api/authors",
+	"/api/notes",
 	wrapAsync(async function (req, res) {
 		console.log("Posted with body: " + JSON.stringify(req.body));
-		const newAuthor = new Author({
-			first_name: req.body.first_name,
-			family_name: req.body.family_name,
-			date_of_birth: req.body.date_of_birth,
-			date_of_death: req.body.date_of_death,
+		const newNote = new Note({
+			text: req.body.text,
+			lastUpdatedDate: req.body.lastUpdatedDate,
 		});
 		// Calling save is needed to save it to the database given we aren't using a special method like the update above
-		await newAuthor.save();
-		res.json(newAuthor);
+		await newNote.save();
+		res.json(newNote);
 	})
 );
 
-app.get(
-	"/api/books",
+app.put(
+	"/api/notes/:id",
 	wrapAsync(async function (req, res) {
-		const books = await Book.find({});
-		res.json(books);
+		const id = req.params.id;
+		console.log(
+			"PUT with id: " + id + ", body: " + JSON.stringify(req.body)
+		);
+		// This below method automatically saves it to the database
+		// findByIdAndUpdate by default does not run the validators, so we need to set the option to enable it.
+		await Note.findByIdAndUpdate(
+			id,
+			{
+				text: req.body.text,
+				lastUpdatedDate: new Date.now(),
+			},
+			{ runValidators: true }
+		);
+		// Status 204 represents success with no content
+		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
+		res.sendStatus(204);
 	})
 );
 
-app.get(
-	"/api/bookinstances",
+app.delete(
+	"/api/notes/:id",
 	wrapAsync(async function (req, res) {
-		// Notice here that this will not only fetch the book instances, but also the book they reference.
-		// Try taking out the .populate part of the line and see what changes.
-		const bookInstances = await BookInstance.find().populate("book");
-		res.json(bookInstances);
+		const id = req.params.id;
+		const result = await Note.findByIdAndDelete(id);
+		console.log("Deleted successfully: " + result);
+		res.json(result);
 	})
 );
 
