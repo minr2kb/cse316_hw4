@@ -7,6 +7,7 @@ import {
 	windowDimensionsState,
 	isEditModeState,
 } from "../../recoilStates";
+import { updateNote, createNote } from "../../api/noteAPI";
 import ReactMarkdown from "react-markdown";
 import { NoteAdd, ArrowBack } from "@mui/icons-material";
 
@@ -77,7 +78,7 @@ const Main = () => {
 					className="main-content"
 					id="note"
 					readOnly={currentNote < 0}
-					value={noteList[currentNote]?.content || ""}
+					value={noteList[currentNote]?.text || ""}
 					placeholder={
 						currentNote >= 0 && "Start to write a new note!"
 					}
@@ -85,7 +86,7 @@ const Main = () => {
 				></textarea>
 				{windowDimensions.width > 700 && (
 					<ReactMarkdown className="main-decoder">
-						{noteList[currentNote]?.content || ""}
+						{noteList[currentNote]?.text || ""}
 					</ReactMarkdown>
 				)}
 			</div>

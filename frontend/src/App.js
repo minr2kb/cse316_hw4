@@ -34,7 +34,10 @@ function App() {
 		// if (localStorage.getItem("noteList") !== null) {
 		// 	setNoteList(notes => JSON.parse(localStorage.getItem("noteList")));
 		// }
-		getNotes().then(response => setNoteList(response));
+		getNotes().then(response => {
+			console.log(response);
+			setNoteList(response);
+		});
 
 		setWindowDimensions(wd => getWindowDimensions());
 		function handleResize() {

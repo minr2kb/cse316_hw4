@@ -9,6 +9,7 @@ import {
 	isEditModeState,
 	showModalState,
 } from "../../recoilStates";
+import { deleteNoteById } from "../../api/noteAPI";
 import { Delete, Search } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -37,6 +38,22 @@ const Sidebar = () => {
 
 	const offFocus = () => {
 		setCurrentNote(current => -1);
+	};
+
+	const formatDateTime = str => {
+		var datetime = new Date(str);
+		let day = datetime.getDate();
+		let month = datetime.getMonth() + 1;
+		let year = datetime.getFullYear();
+		let hour =
+			datetime.getHours() >= 12
+				? datetime.getHours() - 12
+				: datetime.getHours();
+		let min = datetime.getMinutes();
+		let sec = datetime.getSeconds();
+		let mer = datetime.getHours() >= 12 ? "PM" : "AM";
+
+		return `${month}/${day}/${year}, ${hour}:${min}:${sec} ${mer}`;
 	};
 
 	const deleteNote = () => {
@@ -92,7 +109,8 @@ const Sidebar = () => {
 									{note.text.split("\n")[0] || "New Note"}
 								</span>
 								<span style={{ fontSize: "x-small" }}>
-									{note.lastUpdatedDate}
+									{formatDateTime(note.lastUpdatedDate)}
+									{/* {note.lastUpdatedDate} */}
 								</span>
 							</div>
 						)
