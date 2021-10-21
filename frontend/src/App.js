@@ -36,7 +36,7 @@ function App() {
 		// }
 		getNotes().then(response => {
 			console.log(response);
-			setNoteList(response);
+			setNoteList(response.reverse());
 		});
 
 		setWindowDimensions(wd => getWindowDimensions());

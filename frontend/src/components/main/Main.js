@@ -48,10 +48,12 @@ const Main = () => {
 	};
 
 	const addNote = () => {
-		const newNotes = [{ content: "", date: getDate() }, ...noteList];
-		setNoteList(notes => newNotes);
-		setCurrentNote(current => 0);
-		saveNotes(newNotes);
+		const newNote = { text: "", lastUpdatedDate: new Date().toString() };
+		createNote(newNote).then(response => {
+			setNoteList(notes => [newNote, ...noteList]);
+			setCurrentNote(current => 0);
+			// saveNotes(newNotes);
+		});
 	};
 
 	const offFocus = () => {
