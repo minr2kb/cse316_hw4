@@ -76,7 +76,7 @@ const Sidebar = () => {
 			<div id="note-list" className="side-note-list">
 				{noteList.map(
 					(note, idx) =>
-						note.content
+						note.text
 							.replace(" ", "")
 							.toLowerCase()
 							.includes(searchTarget.toLowerCase()) && (
@@ -89,13 +89,14 @@ const Sidebar = () => {
 								onClick={() => viewNote(idx)}
 							>
 								<span className="title" id="title">
-									{note.content.split("\n")[0] || "New Note"}
+									{note.text.split("\n")[0] || "New Note"}
 								</span>
 								<span style={{ fontSize: "x-small" }}>
-									{note.date}
+									{note.lastUpdatedDate}
 								</span>
 							</div>
 						)
+					// console.log(note)
 				)}
 				<div style={{ height: "100%" }} onClick={offFocus}></div>
 			</div>

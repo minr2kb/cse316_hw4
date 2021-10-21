@@ -4,10 +4,8 @@ const defaultHeaders = {
 	},
 };
 
-const baseURL = "http://localhost:5000/";
-
 export const getNotes = () => {
-	return fetch(`${baseURL}/api/notes`, {
+	return fetch(`/api/notes`, {
 		...defaultHeaders,
 	})
 		.then(checkStatus)
@@ -15,7 +13,7 @@ export const getNotes = () => {
 };
 
 export const createNote = note => {
-	return fetch(`${baseURL}/api/notes`, {
+	return fetch(`/api/notes`, {
 		...defaultHeaders,
 		method: "POST",
 		body: JSON.stringify(note),
@@ -25,7 +23,7 @@ export const createNote = note => {
 };
 
 export const updateNote = note => {
-	return fetch(`${baseURL}/api/notes/${note._id}`, {
+	return fetch(`/api/notes/${note._id}`, {
 		...defaultHeaders,
 		method: "PUT",
 		body: JSON.stringify(note),
@@ -33,7 +31,7 @@ export const updateNote = note => {
 };
 
 export const deleteNoteById = noteId => {
-	return fetch(`${baseURL}/api/notes/${noteId}`, {
+	return fetch(`/api/notes/${noteId}`, {
 		...defaultHeaders,
 		method: "DELETE",
 	})

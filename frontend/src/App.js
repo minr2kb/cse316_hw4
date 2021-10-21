@@ -7,6 +7,7 @@ import {
 	isEditModeState,
 	showModalState,
 } from "./recoilStates";
+import { getNotes } from "./api/noteAPI";
 import Sidebar from "./components/sidebar/Sidebar";
 import Main from "./components/main/Main";
 import Modal from "./components/modal/Modal";
@@ -30,9 +31,11 @@ function App() {
 	useEffect(() => {
 		// localStorage.removeItem("noteList");
 
-		if (localStorage.getItem("noteList") !== null) {
-			setNoteList(notes => JSON.parse(localStorage.getItem("noteList")));
-		}
+		// if (localStorage.getItem("noteList") !== null) {
+		// 	setNoteList(notes => JSON.parse(localStorage.getItem("noteList")));
+		// }
+		getNotes().then(response => setNoteList(response));
+
 		setWindowDimensions(wd => getWindowDimensions());
 		function handleResize() {
 			setWindowDimensions(wd => getWindowDimensions());
