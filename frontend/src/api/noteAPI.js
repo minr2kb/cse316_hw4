@@ -31,6 +31,7 @@ export const updateNote = note => {
 };
 
 export const deleteNoteById = noteId => {
+	console.log(noteId);
 	return fetch(`/api/notes/${noteId}`, {
 		...defaultHeaders,
 		method: "DELETE",

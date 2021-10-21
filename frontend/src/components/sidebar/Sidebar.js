@@ -22,10 +22,6 @@ const Sidebar = () => {
 	const [showModal, setShowModal] = useRecoilState(showModalState);
 	const [searchTarget, setSearchTarget] = useState("");
 
-	const saveNotes = newNotes => {
-		localStorage.setItem("noteList", JSON.stringify(newNotes));
-	};
-
 	const handleSearch = e => {
 		setSearchTarget(e.target.value);
 		offFocus();
@@ -57,12 +53,16 @@ const Sidebar = () => {
 	};
 
 	const deleteNote = () => {
-		const newNotes = noteList.filter((note, idx) => idx !== currentNote);
-		setNoteList(notes => newNotes);
-		if (currentNote > noteList.length - 2 && currentNote > -1) {
-			setCurrentNote(current => current - 1);
+		if (currentNote >= 0) {
+			deleteNoteById(noteList[currentNote]._id).then(response => {
+				setNoteList(notes =>
+					noteList.filter((note, idx) => idx !== currentNote)
+				);
+				if (currentNote > noteList.length - 2 && currentNote > -1) {
+					setCurrentNote(current => current - 1);
+				}
+			});
 		}
-		saveNotes(newNotes);
 	};
 
 	return (

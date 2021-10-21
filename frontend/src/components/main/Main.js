@@ -7,7 +7,7 @@ import {
 	windowDimensionsState,
 	isEditModeState,
 } from "../../recoilStates";
-import { updateNote, createNote } from "../../api/noteAPI";
+import { updateNote, createNote, getNotes } from "../../api/noteAPI";
 import ReactMarkdown from "react-markdown";
 import { NoteAdd, ArrowBack } from "@mui/icons-material";
 
@@ -50,8 +50,12 @@ const Main = () => {
 	const addNote = () => {
 		const newNote = { text: "", lastUpdatedDate: new Date().toString() };
 		createNote(newNote).then(response => {
-			setNoteList(notes => [newNote, ...noteList]);
-			setCurrentNote(current => 0);
+			getNotes().then(response => {
+				console.log(response);
+				setNoteList(response.reverse());
+				setCurrentNote(current => 0);
+			});
+
 			// saveNotes(newNotes);
 		});
 	};
