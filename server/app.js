@@ -29,6 +29,14 @@ app.use("/api/users/:id", (req, res, next) => {
 });
 
 app.get(
+	"/api/users",
+	wrapAsync(async function (req, res) {
+		const users = await User.find({});
+		res.json(users);
+	})
+);
+
+app.get(
 	"/api/users/:id",
 	wrapAsync(async function (req, res, next) {
 		let id = req.params.id;
@@ -126,7 +134,7 @@ app.put(
 			id,
 			{
 				text: req.body.text,
-				lastUpdatedDate: new Date.now(),
+				lastUpdatedDate: new Date(),
 			},
 			{ runValidators: true }
 		);

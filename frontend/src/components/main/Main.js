@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import "../../App.css";
 import { useRecoilState } from "recoil";
 import {
@@ -7,7 +7,12 @@ import {
 	windowDimensionsState,
 	isEditModeState,
 } from "../../recoilStates";
-import { updateNote, createNote, getNotes } from "../../api/noteAPI";
+import {
+	updateNote,
+	createNote,
+	getNotes,
+	deleteNoteById,
+} from "../../api/noteAPI";
 import ReactMarkdown from "react-markdown";
 import { NoteAdd, ArrowBack } from "@mui/icons-material";
 
@@ -18,34 +23,41 @@ const Main = () => {
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
 	);
+	const [text, setText] = useState("");
 
-	const saveNotes = newNotes => {
-		localStorage.setItem("noteList", JSON.stringify(newNotes));
-	};
-
-	function getDate() {
-		let today = new Date();
-		let year = today.getFullYear();
-		let month = today.getMonth() + 1;
-		let day = today.getDate();
-		return month + "/" + day + "/" + year;
+	function debounce(func, timeout = 300) {
+		let timer;
+		return (...args) => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				func.apply(this, args);
+			}, timeout);
+		};
 	}
 
-	const editNote = e => {
-		const newNotes = [
-			...noteList.slice(0, currentNote),
-			{ content: e.target.value, date: getDate() },
-			...noteList.slice(currentNote + 1, noteList.length),
-		];
-		setNoteList(notes => newNotes);
-		saveNotes(newNotes);
-		// setNoteList(notes => [
-		// 	{ content: e.target.value, date: getDate() },
-		// 	...notes.slice(0, currentNote),
-		// 	...notes.slice(currentNote + 1, noteList.length),
-		// ]);
-		// setCurrentNote(current => 0);
+	const handleText = e => {
+		setText(e.target.value);
 	};
+
+	const editNote = useCallback(
+		debounce(() => {
+			const newNote = {
+				...noteList[currentNote],
+				text: text,
+			};
+			updateNote(newNote).then(response => {
+				setNoteList(notes => [
+					...noteList.slice(0, currentNote),
+					newNote,
+					...noteList.slice(currentNote + 1, noteList.length),
+				]);
+			});
+			// // console.log(noteList[currentNote]);
+			console.log(currentNote);
+			console.log(text);
+			console.log(newNote);
+		})
+	);
 
 	const addNote = () => {
 		const newNote = { text: "", lastUpdatedDate: new Date().toString() };
@@ -55,14 +67,16 @@ const Main = () => {
 				setNoteList(response.reverse());
 				setCurrentNote(current => 0);
 			});
-
-			// saveNotes(newNotes);
 		});
 	};
 
 	const offFocus = () => {
 		setCurrentNote(current => -1);
 	};
+
+	useEffect(() => {
+		setText(noteList[currentNote]?.text);
+	}, [currentNote]);
 
 	return (
 		<div className="main-body">
@@ -84,11 +98,12 @@ const Main = () => {
 					className="main-content"
 					id="note"
 					readOnly={currentNote < 0}
-					value={noteList[currentNote]?.text || ""}
+					value={text || ""}
 					placeholder={
-						currentNote >= 0 && "Start to write a new note!"
+						currentNote >= 0 ? "Start to write a new note!" : ""
 					}
-					onChange={editNote}
+					onChange={handleText}
+					onKeyUp={editNote}
 				></textarea>
 				{windowDimensions.width > 700 && (
 					<ReactMarkdown className="main-decoder">

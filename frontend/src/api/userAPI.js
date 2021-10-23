@@ -12,6 +12,14 @@ export const getUserById = userId => {
 		.then(parseJSON);
 };
 
+export const getUsers = () => {
+	return fetch(`/api/users/`, {
+		...defaultHeaders,
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
 export const updateUser = user => {
 	return fetch(`/api/users/${user._id}`, {
 		...defaultHeaders,
@@ -34,24 +42,6 @@ export const createUser = user => {
 		...defaultHeaders,
 		method: "POST",
 		body: JSON.stringify(user),
-	})
-		.then(checkStatus)
-		.then(parseJSON);
-};
-
-export const getNotes = () => {
-	return fetch(`/api/notes`, {
-		...defaultHeaders,
-	})
-		.then(checkStatus)
-		.then(parseJSON);
-};
-
-export const createNote = note => {
-	return fetch(`/api/notes`, {
-		...defaultHeaders,
-		method: "POST",
-		body: JSON.stringify(note),
 	})
 		.then(checkStatus)
 		.then(parseJSON);

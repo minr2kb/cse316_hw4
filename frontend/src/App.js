@@ -6,8 +6,10 @@ import {
 	windowDimensionsState,
 	isEditModeState,
 	showModalState,
+	currentUserState,
 } from "./recoilStates";
 import { getNotes } from "./api/noteAPI";
+import { getUsers, createUser } from "./api/userAPI";
 import Sidebar from "./components/sidebar/Sidebar";
 import Main from "./components/main/Main";
 import Modal from "./components/modal/Modal";
@@ -22,6 +24,7 @@ function getWindowDimensions() {
 
 function App() {
 	const [noteList, setNoteList] = useRecoilState(noteListState);
+	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
 	);
@@ -29,14 +32,22 @@ function App() {
 	const [showModal, setShowModal] = useRecoilState(showModalState);
 
 	useEffect(() => {
-		// localStorage.removeItem("noteList");
-
-		// if (localStorage.getItem("noteList") !== null) {
-		// 	setNoteList(notes => JSON.parse(localStorage.getItem("noteList")));
-		// }
 		getNotes().then(response => {
-			console.log(response);
 			setNoteList(response.reverse());
+		});
+
+		getUsers().then(response => {
+			if (response.length < 1) {
+				createUser({
+					name: "Kyungbae Min",
+					email: "kyungbae.min@stonybrook.edu",
+					location: "Cheongju-si",
+				}).then(response => {
+					setCurrentUser(response);
+				});
+			} else {
+				setCurrentUser(response[0]);
+			}
 		});
 
 		setWindowDimensions(wd => getWindowDimensions());

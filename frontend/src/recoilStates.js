@@ -26,6 +26,15 @@ export const currentNoteState = atom({
 	default: -1,
 });
 
+export const currentUserState = atom({
+	key: "currentUserState",
+	default: {
+		name: "",
+		email: "",
+		location: "",
+	},
+});
+
 export const windowDimensionsState = atom({
 	key: "windowDimensionsState",
 	default: { width: 0, height: 0 },

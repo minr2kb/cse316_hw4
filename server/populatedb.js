@@ -67,7 +67,7 @@ function createUsers(cb) {
 				userCreate(
 					"Kyungbae Min",
 					"kyungbae.min@stonybrook.edu",
-					"SUNY Korea",
+					"Cheongju-si",
 					callback
 				);
 			},
