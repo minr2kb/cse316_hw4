@@ -36,19 +36,20 @@ function App() {
 			setNoteList(response.reverse());
 		});
 
-		// getUsers().then(response => {
-		// 	if (response.length < 1) {
-		// 		createUser({
-		// 			name: "Kyungbae Min",
-		// 			email: "kyungbae.min@stonybrook.edu",
-		// 			location: "Cheongju-si",
-		// 		}).then(response => {
-		// 			setCurrentUser(response);
-		// 		});
-		// 	} else {
-		// 		setCurrentUser(response[0]);
-		// 	}
-		// });
+		getUsers().then(response => {
+			if (response.length < 1) {
+				createUser({
+					name: "Kyungbae Min",
+					email: "kyungbae.min@stonybrook.edu",
+					location: "Cheongju-si",
+					img: "https://lh3.googleusercontent.com/a-/AOh14GiFLMqlkh3kt7_q5kWdnHOFAT79ze413y3GqV-iLGc=s96-c",
+				}).then(response => {
+					setCurrentUser(response);
+				});
+			} else {
+				setCurrentUser(response[0]);
+			}
+		});
 
 		setWindowDimensions(wd => getWindowDimensions());
 		function handleResize() {

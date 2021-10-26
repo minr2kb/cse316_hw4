@@ -7,8 +7,9 @@ const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
+// var mongoDB = "mongodb://localhost:27017/MyNote";
 var mongoDB =
-	"mongodb+srv://admin:admin@cluster0.lr4aw.mongodb.net/MyNote?retryWrites=true&w=majority";
+	"mongodb+srv://admin:admin@mycluster.lr4aw.mongodb.net/MyNote?retryWrites=true&w=majority";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
@@ -63,6 +64,7 @@ app.post(
 			name: req.body.name,
 			email: req.body.email,
 			location: req.body.location,
+			img: req.body.img,
 		});
 		await newUser.save();
 		res.json(newUser);

@@ -3,11 +3,39 @@
 -   Name: Kyungbae Min
 -   Student ID: 112986171
 
-## Used packages
+## Server
 
--   Material UI icon package
--   recoil
--   react-markdown
+### Database
+
+Deployed on MongoDB Atlas
+
+-   On mongoose: `mongodb+srv://admin:admin@mycluster.lr4aw.mongodb.net/MyNote?retryWrites=true&w=majority`
+
+-   On Compass: `mongodb://localhost:27017/MyNote`
+
+### REST APIs
+
+`/api/notes`
+
+-   GET
+-   POST `{name:String, email:String, location:String, img:String}`
+
+`/api/notes/:id`
+
+-   GET
+-   PUT `{name:String, email:String, location:String}`
+-   DELETE
+
+`/api/users/`
+
+-   GET
+-   POST `{Text:String, lastUpdatedDate:String}`
+
+`/api/users/:id`
+
+-   GET
+-   PUT `{Text:String, lastUpdatedDate:String}`
+-   DELETE
 
 ## How to start
 
@@ -40,6 +68,13 @@ cse316-hw3
 │   └── package.json
 │
 └── server/
-
+    ├── models/             # DB schemes
+    │   ├── Note.js
+    │   └── User.js
+    │
+    ├── app.js              # Express server w/ mongoose
+    ├── populatedb.js       # Populating db
+    ├── ...
+    └── package.json
 
 ```

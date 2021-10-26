@@ -17,7 +17,8 @@ const Note = require("./models/Note");
 const User = require("./models/User");
 
 var mongoose = require("mongoose");
-var mongoDB = "mongodb://localhost:27017/MyNote";
+var mongoDB =
+	"mongodb+srv://admin:admin@mycluster.lr4aw.mongodb.net/MyNote?retryWrites=true&w=majority";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
@@ -26,11 +27,12 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 var notes = [];
 var users = [];
 
-function userCreate(name, email, location, cb) {
+function userCreate(name, email, location, img, cb) {
 	userdetail = {
 		name: name,
 		email: email,
 		location: location,
+		img: img,
 	};
 
 	var user = new User(userdetail);
@@ -68,6 +70,7 @@ function createUsers(cb) {
 					"Kyungbae Min",
 					"kyungbae.min@stonybrook.edu",
 					"Cheongju-si",
+					"https://lh3.googleusercontent.com/a-/AOh14GiFLMqlkh3kt7_q5kWdnHOFAT79ze413y3GqV-iLGc=s96-c",
 					callback
 				);
 			},

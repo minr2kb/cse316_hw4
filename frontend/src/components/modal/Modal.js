@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../../App.css";
-import me from "../../assets/image/me.jpg";
+import defaultUser from "../../assets/image/defaultUser.jpeg";
 import { useRecoilState } from "recoil";
 import {
 	windowDimensionsState,
 	showModalState,
 	currentUserState,
 } from "../../recoilStates";
-import { getUsers, createUser, updateUser } from "../../api/userAPI";
+import { updateUser } from "../../api/userAPI";
 import { Close } from "@mui/icons-material";
 
 const Modal = () => {
@@ -40,7 +40,8 @@ const Modal = () => {
 				};
 				updateUser(updatedUser).then(response => {
 					if (response.ok) {
-						window.alert("Saved all changes");
+						setCurrentUser(updatedUser);
+						// window.alert("Saved all changes");
 					} else {
 						window.alert("Could not save changes");
 					}
@@ -90,32 +91,9 @@ const Modal = () => {
 	};
 
 	useEffect(() => {
-		getUsers().then(response => {
-			if (response.length < 1) {
-				createUser({
-					name: "Kyungbae Min",
-					email: "kyungbae.min@stonybrook.edu",
-					location: "Cheongju-si",
-				}).then(response => {
-					console.log(response);
-					setCurrentUser(response);
-					setName(response.name);
-					setEmail(response.email);
-					setLocation(response.location);
-				});
-			} else {
-				console.log(response);
-				setCurrentUser(response[0]);
-				setName(response[0].name);
-				setEmail(response[0].email);
-				setLocation(response[0].location);
-			}
-		});
-		// if (currentUser._id !== undefined) {
-		// 	setName(currentUser.name);
-		// 	setEmail(currentUser.email);
-		// 	setLocation(currentUser.location);
-		// }
+		setName(currentUser?.name);
+		setEmail(currentUser?.email);
+		setLocation(currentUser?.location);
 	}, []);
 
 	return (
@@ -141,7 +119,10 @@ const Modal = () => {
 						<Close onClick={closeModal} />
 					</div>
 					<div className="modal-image">
-						<img src={me} alt="profile" />
+						<img
+							src={currentUser.img || defaultUser}
+							alt="profile"
+						/>
 						<div className="selectable-text">Choose New Image</div>
 						<div className="selectable-text">Remove Image</div>
 					</div>

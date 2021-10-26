@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import me from "../../assets/image/me.jpg";
+import defaultUser from "../../assets/image/defaultUser.jpeg";
 import { useRecoilState } from "recoil";
 import {
 	noteListState,
@@ -8,6 +8,7 @@ import {
 	windowDimensionsState,
 	isEditModeState,
 	showModalState,
+	currentUserState,
 } from "../../recoilStates";
 import { deleteNoteById } from "../../api/noteAPI";
 import { Delete, Search } from "@mui/icons-material";
@@ -21,6 +22,7 @@ const Sidebar = () => {
 	const [isEditMode, setIsEditMode] = useRecoilState(isEditModeState);
 	const [showModal, setShowModal] = useRecoilState(showModalState);
 	const [searchTarget, setSearchTarget] = useState("");
+	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 
 	const handleSearch = e => {
 		setSearchTarget(e.target.value);
@@ -73,7 +75,7 @@ const Sidebar = () => {
 			<div className="row side-header">
 				<img
 					id="profile"
-					src={me}
+					src={currentUser.img || defaultUser}
 					alt="profile"
 					onClick={() => setShowModal(show => true)}
 				/>
