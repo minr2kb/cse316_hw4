@@ -7,7 +7,8 @@ const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-var mongoDB = "mongodb://localhost:27017/MyNote";
+var mongoDB =
+	"mongodb+srv://admin:admin@cluster0.lr4aw.mongodb.net/MyNote?retryWrites=true&w=majority";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
