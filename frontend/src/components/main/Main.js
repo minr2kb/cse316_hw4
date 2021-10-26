@@ -25,7 +25,7 @@ const Main = () => {
 	);
 	const [text, setText] = useState("");
 
-	function debounce(func, timeout = 300) {
+	const debounce = useCallback((func, timeout = 1000) => {
 		let timer;
 		return (...args) => {
 			clearTimeout(timer);
@@ -33,31 +33,34 @@ const Main = () => {
 				func.apply(this, args);
 			}, timeout);
 		};
-	}
+	}, []);
 
 	const handleText = e => {
 		setText(e.target.value);
+		debouncedSave(noteList, currentNote, e.target.value);
 	};
 
-	const editNote = useCallback(
-		debounce(() => {
-			const newNote = {
-				...noteList[currentNote],
-				text: text,
-			};
-			updateNote(newNote).then(response => {
-				setNoteList(notes => [
-					...noteList.slice(0, currentNote),
-					newNote,
-					...noteList.slice(currentNote + 1, noteList.length),
-				]);
-			});
-			// // console.log(noteList[currentNote]);
-			console.log(currentNote);
-			console.log(text);
-			console.log(newNote);
-		})
+	const debouncedSave = useCallback(
+		debounce((noteList, currentNote, newText) =>
+			editNote(noteList, currentNote, newText)
+		),
+		[]
 	);
+
+	const editNote = (noteList, currentNote, newText) => {
+		const newNote = {
+			...noteList[currentNote],
+			text: newText,
+		};
+		updateNote(newNote).then(response => {
+			setNoteList(notes => [
+				newNote,
+				...noteList.slice(0, currentNote),
+				...noteList.slice(currentNote + 1, noteList.length),
+			]);
+			setCurrentNote(0);
+		});
+	};
 
 	const addNote = () => {
 		const newNote = { text: "", lastUpdatedDate: new Date().toString() };
@@ -103,7 +106,7 @@ const Main = () => {
 						currentNote >= 0 ? "Start to write a new note!" : ""
 					}
 					onChange={handleText}
-					onKeyUp={editNote}
+					// onKeyUp={editNote}
 				></textarea>
 				{windowDimensions.width > 700 && (
 					<ReactMarkdown className="main-decoder">

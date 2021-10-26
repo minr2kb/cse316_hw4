@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../../App.css";
 import me from "../../assets/image/me.jpg";
 import { useRecoilState } from "recoil";
-import { windowDimensionsState, showModalState } from "../../recoilStates";
+import {
+	windowDimensionsState,
+	showModalState,
+	currentUserState,
+} from "../../recoilStates";
+import { getUsers, createUser, updateUser } from "../../api/userAPI";
 import { Close } from "@mui/icons-material";
 
 const Modal = () => {
@@ -10,30 +15,55 @@ const Modal = () => {
 		windowDimensionsState
 	);
 	const [showModal, setShowModal] = useRecoilState(showModalState);
+	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [location, setLocation] = useState("");
 	const [changed, setChanged] = useState(false);
 
+	const isEmail = email => {
+		const emailRegex =
+			/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+		return emailRegex.test(email);
+	};
+
 	const submit = () => {
-		localStorage.setItem(
-			"profile",
-			JSON.stringify({ name: name, email: email, location: location })
-		);
-		window.alert("Saved all changes");
-		setShowModal(show => false);
+		if (name.length > 0 && email.length > 0 && location.length > 0) {
+			if (isEmail(email)) {
+				var updatedUser = {
+					...currentUser,
+					name: name,
+					email: email,
+					location: location,
+				};
+				updateUser(updatedUser).then(response => {
+					if (response.ok) {
+						window.alert("Saved all changes");
+					} else {
+						window.alert("Could not save changes");
+					}
+					setShowModal(show => false);
+				});
+			} else {
+				window.alert("Email format is invalid");
+			}
+		} else {
+			window.alert("Cannot save the empty information");
+		}
 	};
 
 	const logout = () => {
-		if (window.confirm("Do you want to logout?")) {
-			window.alert("Logged out");
-			setShowModal(show => false);
-			setName("");
-			setEmail("");
-			setLocation("");
-			localStorage.removeItem("profile");
-		}
+		// if (window.confirm("Do you want to logout?")) {
+		// 	window.alert("Logged out");
+		// 	setShowModal(show => false);
+		// 	setName("");
+		// 	setEmail("");
+		// 	setLocation("");
+		// 	localStorage.removeItem("profile");
+		// }
+		window.alert("Not implemented yet");
 	};
 
 	const closeModal = () => {
@@ -60,12 +90,32 @@ const Modal = () => {
 	};
 
 	useEffect(() => {
-		if (localStorage.getItem("profile") !== null) {
-			const profile = JSON.parse(localStorage.getItem("profile"));
-			setName(profile.name);
-			setEmail(profile.email);
-			setLocation(profile.location);
-		}
+		getUsers().then(response => {
+			if (response.length < 1) {
+				createUser({
+					name: "Kyungbae Min",
+					email: "kyungbae.min@stonybrook.edu",
+					location: "Cheongju-si",
+				}).then(response => {
+					console.log(response);
+					setCurrentUser(response);
+					setName(response.name);
+					setEmail(response.email);
+					setLocation(response.location);
+				});
+			} else {
+				console.log(response);
+				setCurrentUser(response[0]);
+				setName(response[0].name);
+				setEmail(response[0].email);
+				setLocation(response[0].location);
+			}
+		});
+		// if (currentUser._id !== undefined) {
+		// 	setName(currentUser.name);
+		// 	setEmail(currentUser.email);
+		// 	setLocation(currentUser.location);
+		// }
 	}, []);
 
 	return (
@@ -114,6 +164,7 @@ const Modal = () => {
 								placeholder="Email"
 								value={email}
 								onChange={editEmail}
+								type="email"
 							/>
 						</div>
 					</div>
@@ -130,12 +181,12 @@ const Modal = () => {
 					</div>
 
 					<div className="modal-footer">
-						<div
+						<input
 							className="save-button selectable-text"
 							onClick={submit}
-						>
-							Save
-						</div>
+							value="Save"
+							type="submit"
+						/>
 
 						<div className="selectable-text" onClick={logout}>
 							Logout

@@ -105,7 +105,7 @@ app.use("/api/notes/:id", (req, res, next) => {
 app.get(
 	"/api/notes",
 	wrapAsync(async function (req, res) {
-		const notes = await Note.find({});
+		const notes = await Note.find({}).sort({ lastUpdatedDate: 1 });
 		res.json(notes);
 	})
 );

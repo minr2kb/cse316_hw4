@@ -81,7 +81,11 @@ function createNotes(cb) {
 	async.parallel(
 		[
 			function (callback) {
-				noteCreate("This is my first note", new Date(), callback);
+				noteCreate(
+					"# My First Note \n## By. Kyungbae Min",
+					new Date(),
+					callback
+				);
 			},
 		],
 		// optional callback
