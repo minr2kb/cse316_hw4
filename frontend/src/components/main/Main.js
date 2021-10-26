@@ -6,6 +6,7 @@ import {
 	currentNoteState,
 	windowDimensionsState,
 	isEditModeState,
+	searchTargetState,
 } from "../../recoilStates";
 import { updateNote, createNote } from "../../api/noteAPI";
 import ReactMarkdown from "react-markdown";
@@ -18,6 +19,7 @@ const Main = () => {
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
 	);
+	const [searchTarget, setSearchTarget] = useRecoilState(searchTargetState);
 	const [text, setText] = useState("");
 
 	const debounce = useCallback((func, timeout = 1000) => {
@@ -59,6 +61,7 @@ const Main = () => {
 
 	const addNote = () => {
 		const newNote = { text: "", lastUpdatedDate: new Date().toString() };
+		setSearchTarget(() => "");
 		createNote(newNote).then(response => {
 			setNoteList([response, ...noteList]);
 			setCurrentNote(current => 0);

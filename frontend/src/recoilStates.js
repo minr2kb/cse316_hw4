@@ -49,3 +49,8 @@ export const showModalState = atom({
 	key: "showModalState",
 	default: false,
 });
+
+export const searchTargetState = atom({
+	key: "searchTargetState",
+	default: "",
+});

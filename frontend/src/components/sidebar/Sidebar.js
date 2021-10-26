@@ -9,6 +9,7 @@ import {
 	isEditModeState,
 	showModalState,
 	currentUserState,
+	searchTargetState,
 } from "../../recoilStates";
 import { deleteNoteById } from "../../api/noteAPI";
 import { Delete, Search } from "@mui/icons-material";
@@ -21,12 +22,23 @@ const Sidebar = () => {
 	);
 	const [isEditMode, setIsEditMode] = useRecoilState(isEditModeState);
 	const [showModal, setShowModal] = useRecoilState(showModalState);
-	const [searchTarget, setSearchTarget] = useState("");
+	const [searchTarget, setSearchTarget] = useRecoilState(searchTargetState);
 	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 
 	const handleSearch = e => {
-		setSearchTarget(e.target.value);
-		offFocus();
+		setSearchTarget(() => e.target.value);
+		if (
+			noteList.map((note, idx) =>
+				note.text
+					.replace(" ", "")
+					.toLowerCase()
+					.includes(searchTarget.replace(" ", "").toLowerCase())
+			).length > 0
+		) {
+			setCurrentNote(0);
+		} else {
+			offFocus();
+		}
 	};
 
 	const viewNote = idx => {
@@ -98,7 +110,9 @@ const Sidebar = () => {
 						note.text
 							.replace(" ", "")
 							.toLowerCase()
-							.includes(searchTarget.toLowerCase()) && (
+							.includes(
+								searchTarget.replace(" ", "").toLowerCase()
+							) && (
 							<div
 								className={
 									"row side-note" +
