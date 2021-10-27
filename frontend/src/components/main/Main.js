@@ -64,7 +64,7 @@ const Main = () => {
 		setSearchTarget(() => "");
 		createNote(newNote).then(response => {
 			setNoteList([response, ...noteList]);
-			setCurrentNote(current => 0);
+			setCurrentNote(() => 0);
 		});
 	};
 
@@ -73,8 +73,15 @@ const Main = () => {
 	};
 
 	useEffect(() => {
-		setText(noteList[currentNote]?.text);
-	}, [currentNote]);
+		console.log("UseEffect");
+		let queriedList = noteList.filter((note, idx) =>
+			note.text
+				.replace(/[ \n]/g, "")
+				.toLowerCase()
+				.includes(searchTarget.replace(/[ \n]/g, "").toLowerCase())
+		);
+		setText(queriedList[currentNote]?.text);
+	}, [currentNote, noteList, searchTarget]);
 
 	return (
 		<div className="main-body">
@@ -105,7 +112,7 @@ const Main = () => {
 				></textarea>
 				{windowDimensions.width > 700 && (
 					<ReactMarkdown className="main-decoder">
-						{noteList[currentNote]?.text || ""}
+						{text || ""}
 					</ReactMarkdown>
 				)}
 			</div>
