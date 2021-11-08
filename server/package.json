@@ -5,13 +5,17 @@
 	"main": "app.js",
 	"scripts": {
 		"start": "nodemon app.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"db-start": "brew services start mongodb-community",
+		"db-stop": "brew services stop mongodb-community "
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
 		"async": "3.2.1",
+		"connect-mongo": "4.6.0",
 		"express": "4.17.1",
+		"express-session": "1.17.2",
 		"mongoose": "6.0.11",
 		"nodemon": "2.0.14"
 	}
