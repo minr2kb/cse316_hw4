@@ -47,7 +47,6 @@ const Modal = () => {
 	const signout = () => {
 		if (window.confirm("Do you want to logout?")) {
 			logout().then(response => {
-				setCurrentUser(() => null);
 				window.location.reload();
 			});
 		}

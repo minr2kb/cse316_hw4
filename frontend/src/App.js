@@ -8,7 +8,6 @@ import {
 	showModalState,
 	showSignupState,
 	currentUserState,
-	isLoggedInState,
 } from "./recoilStates";
 
 import { login, getUser, getNotes } from "./api/client";
@@ -16,6 +15,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Main from "./components/main/Main";
 import Modal from "./components/modal/Modal";
 import Signup from "./components/auth/Signup";
+import Login from "./components/auth/Login";
 
 function getWindowDimensions() {
 	const { innerWidth: width, innerHeight: height } = window;
@@ -67,7 +67,15 @@ function App() {
 					{showModal && <Modal />}
 				</>
 			) : (
-				<>{showSignup && <Signup />}</>
+				<>
+					{windowDimensions.width > 500 ? (
+						<>
+							<Login /> {showSignup && <Signup />}
+						</>
+					) : (
+						<>{showSignup ? <Signup /> : <Login />}</>
+					)}
+				</>
 			)}
 		</div>
 	);

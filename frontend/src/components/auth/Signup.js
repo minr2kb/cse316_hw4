@@ -19,6 +19,7 @@ const Signup = () => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState(null);
 
 	const isEmail = email => {
 		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -27,30 +28,29 @@ const Signup = () => {
 	};
 
 	const submit = () => {
-		if (window.confirm("Do you want to sign up with this information?")) {
-			if (isEmail(email)) {
-				register(name, email, password).then(response => {
-					if (response == "duplicated") {
-						window.alert("This email is already been registered.");
-						setEmail("");
+		if (isEmail(email)) {
+			register(name, email, password).then(response => {
+				if (response == "duplicated") {
+					setError("Error: This email is already been registered.");
+					setEmail("");
+				} else {
+					if (password.length < 6) {
+						setError(
+							"Error: Password should be a minimum of 6 characters"
+						);
 					} else {
-						if (password.length < 6) {
-							window.alert(
-								"Password should be a minimum of 6 characters"
-							);
-						} else {
-							window.alert("Welcome!");
-							getUser().then(response =>
-								setCurrentUser(response)
-							);
-							// setIsLoggedIn(() => true);
-							closeModal();
+						if (
+							window.confirm(
+								"Do you want to sign up with this information?"
+							)
+						) {
+							window.location.reload();
 						}
 					}
-				});
-			} else {
-				window.alert("Email is invalid.");
-			}
+				}
+			});
+		} else {
+			setError("Error: Email is invalid.");
 		}
 	};
 
@@ -143,7 +143,17 @@ const Signup = () => {
 							/>
 						</div>
 					</div>
-
+					{error && (
+						<div
+							style={{
+								color: "red",
+								fontWeight: 600,
+								fontSize: "large",
+							}}
+						>
+							{error}
+						</div>
+					)}
 					<div
 						className="modal-footer"
 						style={{ justifyContent: "center" }}

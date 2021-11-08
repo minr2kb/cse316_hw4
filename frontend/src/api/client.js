@@ -58,9 +58,13 @@ export const login = (email, password) => {
 			email: email,
 			password: password,
 		}),
-	})
-		.then(checkStatus)
-		.then(parseJSON);
+	}).then(response => {
+		if (response.status < 400) {
+			return "success";
+		} else {
+			return "failed";
+		}
+	});
 };
 
 export const logout = () => {
