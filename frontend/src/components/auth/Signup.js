@@ -5,8 +5,9 @@ import {
 	windowDimensionsState,
 	showSignupState,
 	currentUserState,
+	isLoggedInState,
 } from "../../recoilStates";
-import { register } from "../../api/client";
+import { register, getUser } from "../../api/client";
 import { Close } from "@mui/icons-material";
 
 const Signup = () => {
@@ -15,6 +16,7 @@ const Signup = () => {
 	);
 	const [showSignup, setShowSignup] = useRecoilState(showSignupState);
 	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+	const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -40,6 +42,8 @@ const Signup = () => {
 							);
 						} else {
 							window.alert("Welcome!");
+                            getUser().then(response => setCurrentUser(response))
+							setIsLoggedIn(() => true);
 							closeModal();
 						}
 					}

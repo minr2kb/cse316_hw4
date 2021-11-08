@@ -28,7 +28,7 @@ export const currentNoteState = atom({
 
 export const currentUserState = atom({
 	key: "currentUserState",
-	default: {},
+	default: null,
 });
 
 export const windowDimensionsState = atom({
@@ -48,6 +48,11 @@ export const showModalState = atom({
 
 export const showSignupState = atom({
 	key: "showSignupState",
+	default: false,
+});
+
+export const isLoggedInState = atom({
+	key: "isLoggedInState",
 	default: false,
 });
 

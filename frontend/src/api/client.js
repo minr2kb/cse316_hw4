@@ -7,9 +7,13 @@ const defaultHeaders = {
 export const getUser = () => {
 	return fetch(`/api/user`, {
 		...defaultHeaders,
-	})
-		.then(checkStatus)
-		.then(parseJSON);
+	}).then(response => {
+		if (response.status >= 500) {
+			return null;
+		} else {
+			return parseJSON(response);
+		}
+	});
 };
 
 export const updateUser = user => {
@@ -95,7 +99,6 @@ export const updateNote = note => {
 };
 
 export const deleteNoteById = noteId => {
-	console.log(noteId);
 	return fetch(`/api/notes/${noteId}`, {
 		...defaultHeaders,
 		method: "DELETE",
