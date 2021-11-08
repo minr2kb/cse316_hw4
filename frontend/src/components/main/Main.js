@@ -8,7 +8,7 @@ import {
 	isEditModeState,
 	searchTargetState,
 } from "../../recoilStates";
-import { updateNote, createNote } from "../../api/noteAPI";
+import { updateNote, createNote } from "../../api/client";
 import ReactMarkdown from "react-markdown";
 import { NoteAdd, ArrowBack } from "@mui/icons-material";
 

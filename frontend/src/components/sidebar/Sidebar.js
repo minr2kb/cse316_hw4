@@ -11,7 +11,7 @@ import {
 	currentUserState,
 	searchTargetState,
 } from "../../recoilStates";
-import { deleteNoteById } from "../../api/noteAPI";
+import { deleteNoteById } from "../../api/client";
 import { Delete, Search } from "@mui/icons-material";
 
 const Sidebar = () => {

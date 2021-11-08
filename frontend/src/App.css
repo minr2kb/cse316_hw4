@@ -163,7 +163,7 @@ input:focus {
 
 .modal {
 	background-color: rgb(255, 255, 255);
-	border-radius: 20px;
+	border-radius: 15px;
 	box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
 }
 
@@ -183,7 +183,7 @@ input:focus {
 
 .modal-inner {
 	width: 350px;
-	padding: 15px;
+	padding: 10px;
 }
 
 .modal-header {
@@ -208,7 +208,7 @@ input:focus {
 	position: relative;
 	font-size: large;
 	font-weight: 600;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 .modal-input {
@@ -224,6 +224,7 @@ input:focus {
 	align-items: center;
 	font-weight: 600;
 	margin-top: 15px;
+	margin-bottom: 10px;
 }
 
 .save-button {
@@ -231,12 +232,25 @@ input:focus {
 	font-weight: 400;
 	background-color: var(--action-color);
 	border: none;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 12px;
+	padding-bottom: 12px;
 	padding-left: 25px;
 	padding-right: 25px;
-	border-radius: 12px;
+	border-radius: 10px;
 }
+
+.green-button {
+	color: var(--action-text-color);
+	font-weight: 400;
+	background-color: rgb(67, 167, 33);
+	border: none;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 25px;
+	padding-right: 25px;
+	border-radius: 10px;
+}
+
 .selectable-text {
 	cursor: pointer;
 }

@@ -8,11 +8,12 @@ import {
 	showModalState,
 	currentUserState,
 } from "./recoilStates";
-import { getNotes } from "./api/noteAPI";
-import { getUsers, createUser } from "./api/userAPI";
+
+import { getUsers, createUser, getNotes } from "./api/client";
 import Sidebar from "./components/sidebar/Sidebar";
 import Main from "./components/main/Main";
 import Modal from "./components/modal/Modal";
+import Signup from "./components/auth/Signup";
 
 function getWindowDimensions() {
 	const { innerWidth: width, innerHeight: height } = window;
@@ -32,24 +33,24 @@ function App() {
 	const [showModal, setShowModal] = useRecoilState(showModalState);
 
 	useEffect(() => {
-		getNotes().then(response => {
-			setNoteList(response.reverse());
-		});
+		// getNotes().then(response => {
+		// 	setNoteList(response.reverse());
+		// });
 
-		getUsers().then(response => {
-			if (response.length < 1) {
-				createUser({
-					name: "Kyungbae Min",
-					email: "kyungbae.min@stonybrook.edu",
-					location: "Cheongju-si",
-					img: "https://lh3.googleusercontent.com/a-/AOh14GiFLMqlkh3kt7_q5kWdnHOFAT79ze413y3GqV-iLGc=s96-c",
-				}).then(response => {
-					setCurrentUser(response);
-				});
-			} else {
-				setCurrentUser(response[0]);
-			}
-		});
+		// getUsers().then(response => {
+		// 	if (response.length < 1) {
+		// 		createUser({
+		// 			name: "Kyungbae Min",
+		// 			email: "kyungbae.min@stonybrook.edu",
+		// 			location: "Cheongju-si",
+		// 			img: "https://lh3.googleusercontent.com/a-/AOh14GiFLMqlkh3kt7_q5kWdnHOFAT79ze413y3GqV-iLGc=s96-c",
+		// 		}).then(response => {
+		// 			setCurrentUser(response);
+		// 		});
+		// 	} else {
+		// 		setCurrentUser(response[0]);
+		// 	}
+		// });
 
 		setWindowDimensions(wd => getWindowDimensions());
 		function handleResize() {
@@ -61,14 +62,15 @@ function App() {
 
 	return (
 		<div className="layout">
-			{windowDimensions.width > 500 ? (
+			{/* {windowDimensions.width > 500 ? (
 				<>
 					<Sidebar /> <Main />
 				</>
 			) : (
 				!showModal && (isEditMode ? <Main /> : <Sidebar />)
 			)}
-			{showModal && <Modal />}
+			{showModal && <Modal />} */}
+			<Signup />
 		</div>
 	);
 }

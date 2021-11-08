@@ -10,7 +10,7 @@ import {
 import { updateUser } from "../../api/client";
 import { Close } from "@mui/icons-material";
 
-const Modal = () => {
+const Signup = () => {
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
 	);
@@ -19,7 +19,7 @@ const Modal = () => {
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
-	const [location, setLocation] = useState("");
+	const [password, setPassword] = useState("");
 	const [changed, setChanged] = useState(false);
 
 	const isEmail = email => {
@@ -29,29 +29,29 @@ const Modal = () => {
 	};
 
 	const submit = () => {
-		if (name.length > 0 && email.length > 0 && location.length > 0) {
-			if (isEmail(email)) {
-				var updatedUser = {
-					...currentUser,
-					name: name,
-					email: email,
-					location: location,
-				};
-				updateUser(updatedUser).then(response => {
-					if (response.ok) {
-						setCurrentUser(updatedUser);
-						// window.alert("Saved all changes");
-					} else {
-						window.alert("Could not save changes");
-					}
-					setShowModal(show => false);
-				});
-			} else {
-				window.alert("Email format is invalid");
-			}
-		} else {
-			window.alert("Cannot save the empty information");
-		}
+		// if (name.length > 0 && email.length > 0 && password.length > 0) {
+		// 	if (isEmail(email)) {
+		// 		var updatedUser = {
+		// 			...currentUser,
+		// 			name: name,
+		// 			email: email,
+		// 			password: password,
+		// 		};
+		// 		updateUser(updatedUser).then(response => {
+		// 			if (response.ok) {
+		// 				setCurrentUser(updatedUser);
+		// 				// window.alert("Saved all changes");
+		// 			} else {
+		// 				window.alert("Could not save changes");
+		// 			}
+		// 			setShowModal(show => false);
+		// 		});
+		// 	} else {
+		// 		window.alert("Email format is invalid");
+		// 	}
+		// } else {
+		// 	window.alert("Cannot save the empty information");
+		// }
 	};
 
 	const logout = () => {
@@ -84,16 +84,12 @@ const Modal = () => {
 		setChanged(true);
 	};
 
-	const editLocation = e => {
-		setLocation(e.target.value);
+	const editPassword = e => {
+		setPassword(e.target.value);
 		setChanged(true);
 	};
 
-	useEffect(() => {
-		setName(currentUser?.name);
-		setEmail(currentUser?.email);
-		setLocation(currentUser?.location);
-	}, []);
+	useEffect(() => {}, []);
 
 	return (
 		<div
@@ -111,20 +107,16 @@ const Modal = () => {
 				onClick={e => e.stopPropagation()}
 			>
 				<div className="modal-inner">
-					<div className="modal-header">
-						<span style={{ fontWeight: 900, fontSize: "larger" }}>
-							Edit Profile
+					<div
+						className="modal-header"
+						style={{ marginBottom: "10px" }}
+					>
+						<span style={{ fontWeight: "900", fontSize: "larger" }}>
+							Sign Up
 						</span>
 						<Close onClick={closeModal} />
 					</div>
-					<div className="modal-image">
-						<img
-							src={currentUser.img || defaultUser}
-							alt="profile"
-						/>
-						<div className="selectable-text">Choose New Image</div>
-						<div className="selectable-text">Remove Image</div>
-					</div>
+
 					<div className="modal-info">
 						<div>Name</div>
 						<div style={{ display: "flex" }}>
@@ -149,28 +141,28 @@ const Modal = () => {
 						</div>
 					</div>
 					<div className="modal-info">
-						<div>Location</div>
+						<div>Password</div>
 						<div style={{ display: "flex" }}>
 							<input
+								type="password"
 								className="modal-input"
-								placeholder="Location"
-								value={location}
-								onChange={editLocation}
+								placeholder="Password"
+								value={password}
+								onChange={editPassword}
 							/>
 						</div>
 					</div>
 
-					<div className="modal-footer">
+					<div
+						className="modal-footer"
+						style={{ justifyContent: "center" }}
+					>
 						<input
-							className="save-button selectable-text"
+							className="green-button selectable-text"
 							onClick={submit}
-							value="Save"
+							value="Sign Up"
 							type="submit"
 						/>
-
-						<div className="selectable-text" onClick={logout}>
-							Logout
-						</div>
 					</div>
 				</div>
 			</div>
@@ -178,4 +170,4 @@ const Modal = () => {
 	);
 };
 
-export default Modal;
+export default Signup;

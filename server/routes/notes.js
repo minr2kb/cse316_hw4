@@ -31,7 +31,6 @@ router.get(
 	"/notes",
 	requireLogin,
 	wrapAsync(async function (req, res) {
-		console.log(req.session.userId);
 		const notes = await Note.find({ creator: req.session.userId }).sort({
 			lastUpdatedDate: 1,
 		});
