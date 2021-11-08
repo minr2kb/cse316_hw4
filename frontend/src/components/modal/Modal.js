@@ -7,7 +7,7 @@ import {
 	showModalState,
 	currentUserState,
 } from "../../recoilStates";
-import { updateUser } from "../../api/client";
+import { updateUser, logout } from "../../api/client";
 import { Close } from "@mui/icons-material";
 
 const Modal = () => {
@@ -22,48 +22,35 @@ const Modal = () => {
 	const [location, setLocation] = useState("");
 	const [changed, setChanged] = useState(false);
 
-	const isEmail = email => {
-		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
-		return emailRegex.test(email);
-	};
-
 	const submit = () => {
-		if (name.length > 0 && email.length > 0 && location.length > 0) {
-			if (isEmail(email)) {
-				var updatedUser = {
-					...currentUser,
-					name: name,
-					email: email,
-					location: location,
-				};
-				updateUser(updatedUser).then(response => {
-					if (response.ok) {
-						setCurrentUser(updatedUser);
-						// window.alert("Saved all changes");
-					} else {
-						window.alert("Could not save changes");
-					}
-					setShowModal(show => false);
-				});
-			} else {
-				window.alert("Email format is invalid");
-			}
+		if (name.length > 0 && location.length > 0) {
+			var updatedUser = {
+				...currentUser,
+				name: name,
+				location: location,
+				profile_url: "",
+			};
+			updateUser(updatedUser).then(response => {
+				if (response.ok) {
+					setCurrentUser(updatedUser);
+					window.alert("Saved all changes");
+				} else {
+					window.alert("Failed to save changes");
+				}
+				setShowModal(show => false);
+			});
 		} else {
 			window.alert("Cannot save the empty information");
 		}
 	};
 
-	const logout = () => {
-		// if (window.confirm("Do you want to logout?")) {
-		// 	window.alert("Logged out");
-		// 	setShowModal(show => false);
-		// 	setName("");
-		// 	setEmail("");
-		// 	setLocation("");
-		// 	localStorage.removeItem("profile");
-		// }
-		window.alert("Not implemented yet");
+	const signout = () => {
+		if (window.confirm("Do you want to logout?")) {
+			logout().then(response => {
+				setCurrentUser(() => null);
+				window.location.reload();
+			});
+		}
 	};
 
 	const closeModal = () => {
@@ -71,7 +58,7 @@ const Modal = () => {
 			window.confirm("Do you want to save the changes before closing?") &&
 				submit();
 		}
-		setShowModal(show => false);
+		setShowModal(() => false);
 	};
 
 	const editName = e => {
@@ -148,6 +135,7 @@ const Modal = () => {
 								value={email}
 								onChange={editEmail}
 								type="email"
+								readOnly={true}
 							/>
 						</div>
 					</div>
@@ -171,7 +159,7 @@ const Modal = () => {
 							type="submit"
 						/>
 
-						<div className="selectable-text" onClick={logout}>
+						<div className="selectable-text" onClick={signout}>
 							Logout
 						</div>
 					</div>

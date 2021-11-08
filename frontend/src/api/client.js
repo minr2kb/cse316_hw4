@@ -64,12 +64,11 @@ export const login = (email, password) => {
 };
 
 export const logout = () => {
-	return fetch(`/api/login`, {
+	return fetch(`/api/logout`, {
 		...defaultHeaders,
 		method: "POST",
-	})
-		.then(checkStatus)
-		.then(parseJSON);
+		body: JSON.stringify([]),
+	}).then(checkStatus);
 };
 
 export const getNotes = () => {

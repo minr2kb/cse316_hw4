@@ -34,7 +34,6 @@ function App() {
 	const [isEditMode, setIsEditMode] = useRecoilState(isEditModeState);
 	const [showModal, setShowModal] = useRecoilState(showModalState);
 	const [showSignup, setShowSignup] = useRecoilState(showSignupState);
-	const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
 	useEffect(() => {
 		getUser().then(response => {
@@ -42,29 +41,9 @@ function App() {
 				setCurrentUser(() => response);
 				getNotes().then(response => {
 					setNoteList(() => response.reverse());
-					setIsLoggedIn(() => true);
 				});
 			}
 		});
-
-		// getNotes().then(response => {
-		// 	setNoteList(response.reverse());
-		// });
-
-		// getUsers().then(response => {
-		// 	if (response.length < 1) {
-		// 		createUser({
-		// 			name: "Kyungbae Min",
-		// 			email: "kyungbae.min@stonybrook.edu",
-		// 			location: "Cheongju-si",
-		// 			img: "https://lh3.googleusercontent.com/a-/AOh14GiFLMqlkh3kt7_q5kWdnHOFAT79ze413y3GqV-iLGc=s96-c",
-		// 		}).then(response => {
-		// 			setCurrentUser(response);
-		// 		});
-		// 	} else {
-		// 		setCurrentUser(response[0]);
-		// 	}
-		// });
 
 		setWindowDimensions(wd => getWindowDimensions());
 		function handleResize() {
@@ -76,7 +55,7 @@ function App() {
 
 	return (
 		<div className="layout">
-			{isLoggedIn ? (
+			{currentUser ? (
 				<>
 					{windowDimensions.width > 500 ? (
 						<>
@@ -88,7 +67,7 @@ function App() {
 					{showModal && <Modal />}
 				</>
 			) : (
-				<>{showSignupState && <Signup />}</>
+				<>{showSignup && <Signup />}</>
 			)}
 		</div>
 	);
