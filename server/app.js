@@ -24,7 +24,7 @@ mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-const sessionSecret = "KyungbaeMin";
+const sessionSecret = process.env.SESSION_SECRET;
 
 const store = MongoStore.create({
 	mongoUrl: dbURL,
@@ -50,12 +50,6 @@ const sessionConfig = {
 };
 
 app.use(session(sessionConfig));
-
-function wrapAsync(fn) {
-	return function (req, res, next) {
-		fn(req, res, next).catch(e => next(e));
-	};
-}
 
 app.use((req, res, next) => {
 	req.requestTime = Date.now();
