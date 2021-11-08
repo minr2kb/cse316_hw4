@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 var NoteSchema = new Schema({
 	text: { type: String },
 	lastUpdatedDate: { type: Date, default: new Date() },
+	agent: { type: Schema.Types.ObjectId, ref: "User", required: false },
 });
 
 //Export model
