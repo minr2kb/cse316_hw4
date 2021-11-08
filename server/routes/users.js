@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const User = require("../models/user");
+const User = require("../models/User");
 const { wrapAsync } = require("../utils/helper");
 const { requireLogin } = require("../middleware/auth");
 const multer = require("multer");
@@ -10,6 +10,7 @@ const upload = multer({ dest: "uploads/" });
 router.post(
 	"/register",
 	wrapAsync(async function (req, res) {
+		console.log(req.body);
 		const { password, email, name } = req.body;
 		const user = new User({
 			email,
@@ -49,7 +50,7 @@ router.post(
 );
 
 router.put(
-	"/api/users/:id",
+	"/users/:id",
 	requireLogin,
 	wrapAsync(async function (req, res) {
 		const id = req.params.id;
@@ -70,7 +71,7 @@ router.put(
 );
 
 router.delete(
-	"/api/users/:id",
+	"/users/:id",
 	requireLogin,
 	wrapAsync(async function (req, res) {
 		const id = req.params.id;
@@ -81,7 +82,7 @@ router.delete(
 );
 
 router.get(
-	"/api/users/:id",
+	"/users/:id",
 	wrapAsync(async function (req, res, next) {
 		let id = req.params.id;
 		if (mongoose.isValidObjectId(id)) {
