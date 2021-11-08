@@ -15,7 +15,7 @@ var UserSchema = new Schema({
 		trim: true,
 		unique: true,
 	},
-	location: { type: String, required: true },
+	location: { type: String },
 	profile_url: { type: String },
 	password: {
 		type: String,
