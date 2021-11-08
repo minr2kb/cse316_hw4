@@ -115,7 +115,10 @@ const Modal = () => {
 						<span style={{ fontWeight: 900, fontSize: "larger" }}>
 							Edit Profile
 						</span>
-						<Close onClick={closeModal} />
+						<Close
+							onClick={closeModal}
+							style={{ cursor: "pointer" }}
+						/>
 					</div>
 					<div className="modal-image">
 						<img

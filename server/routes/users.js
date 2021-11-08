@@ -10,7 +10,6 @@ const upload = multer({ dest: "uploads/" });
 router.post(
 	"/register",
 	wrapAsync(async function (req, res) {
-		console.log(req.body);
 		const { password, email, name } = req.body;
 		const user = new User({
 			email,
@@ -23,7 +22,7 @@ router.post(
 		req.session.userId = user._id;
 		// Note: this is returning the entire user object to demo, which will include the hashed and salted password.
 		// In practice, you wouldn't typically do this – a success status would suffice, or perhaps just the user id.
-		res.json(user);
+		res.sendStatus(204);
 	})
 );
 
@@ -34,6 +33,7 @@ router.post(
 		const user = await User.findAndValidate(email, password);
 		if (user) {
 			req.session.userId = user._id;
+
 			res.sendStatus(204);
 		} else {
 			res.sendStatus(401);
@@ -50,10 +50,10 @@ router.post(
 );
 
 router.put(
-	"/users/:id",
+	"/user",
 	requireLogin,
 	wrapAsync(async function (req, res) {
-		const id = req.params.id;
+		const id = req.session.userId;
 		console.log(
 			"PUT with id: " + id + ", body: " + JSON.stringify(req.body)
 		);
@@ -71,10 +71,10 @@ router.put(
 );
 
 router.delete(
-	"/users/:id",
+	"/user",
 	requireLogin,
 	wrapAsync(async function (req, res) {
-		const id = req.params.id;
+		const id = req.session.userId;
 		const result = await User.findByIdAndDelete(id);
 		console.log("Deleted successfully: " + result);
 		res.json(result);
@@ -82,9 +82,9 @@ router.delete(
 );
 
 router.get(
-	"/users/:id",
+	"/user",
 	wrapAsync(async function (req, res, next) {
-		let id = req.params.id;
+		const id = req.session.userId;
 		if (mongoose.isValidObjectId(id)) {
 			const user = await User.findById(id);
 			if (user) {

@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "../../App.css";
-import defaultUser from "../../assets/image/defaultUser.jpeg";
 import { useRecoilState } from "recoil";
 import {
 	windowDimensionsState,
-	showModalState,
+	showSignupState,
 	currentUserState,
 } from "../../recoilStates";
-import { updateUser } from "../../api/client";
+import { register } from "../../api/client";
 import { Close } from "@mui/icons-material";
 
 const Signup = () => {
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
 	);
-	const [showModal, setShowModal] = useRecoilState(showModalState);
+	const [showSignup, setShowSignup] = useRecoilState(showSignupState);
 	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [changed, setChanged] = useState(false);
 
 	const isEmail = email => {
 		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -29,64 +27,50 @@ const Signup = () => {
 	};
 
 	const submit = () => {
-		// if (name.length > 0 && email.length > 0 && password.length > 0) {
-		// 	if (isEmail(email)) {
-		// 		var updatedUser = {
-		// 			...currentUser,
-		// 			name: name,
-		// 			email: email,
-		// 			password: password,
-		// 		};
-		// 		updateUser(updatedUser).then(response => {
-		// 			if (response.ok) {
-		// 				setCurrentUser(updatedUser);
-		// 				// window.alert("Saved all changes");
-		// 			} else {
-		// 				window.alert("Could not save changes");
-		// 			}
-		// 			setShowModal(show => false);
-		// 		});
-		// 	} else {
-		// 		window.alert("Email format is invalid");
-		// 	}
-		// } else {
-		// 	window.alert("Cannot save the empty information");
-		// }
+		if (window.confirm("Do you want to sign up with this information?")) {
+			if (isEmail(email)) {
+				register(name, email, password).then(response => {
+					if (response == "duplicated") {
+						window.alert("This email is already been registered.");
+						setEmail("");
+					} else {
+						if (password.length < 6) {
+							window.alert(
+								"Password should be a minimum of 6 characters"
+							);
+						} else {
+							window.alert("Welcome!");
+							closeModal();
+						}
+					}
+				});
+			} else {
+				window.alert("Email is invalid.");
+			}
+		}
 	};
 
-	const logout = () => {
-		// if (window.confirm("Do you want to logout?")) {
-		// 	window.alert("Logged out");
-		// 	setShowModal(show => false);
-		// 	setName("");
-		// 	setEmail("");
-		// 	setLocation("");
-		// 	localStorage.removeItem("profile");
-		// }
-		window.alert("Not implemented yet");
+	const clear = () => {
+		setName("");
+		setEmail("");
+		setPassword("");
 	};
 
 	const closeModal = () => {
-		if (changed) {
-			window.confirm("Do you want to save the changes before closing?") &&
-				submit();
-		}
-		setShowModal(show => false);
+		clear();
+		setShowSignup(() => false);
 	};
 
 	const editName = e => {
 		setName(e.target.value);
-		setChanged(true);
 	};
 
 	const editEmail = e => {
 		setEmail(e.target.value);
-		setChanged(true);
 	};
 
 	const editPassword = e => {
 		setPassword(e.target.value);
-		setChanged(true);
 	};
 
 	useEffect(() => {}, []);
@@ -114,7 +98,10 @@ const Signup = () => {
 						<span style={{ fontWeight: "900", fontSize: "larger" }}>
 							Sign Up
 						</span>
-						<Close onClick={closeModal} />
+						<Close
+							onClick={closeModal}
+							style={{ cursor: "pointer" }}
+						/>
 					</div>
 
 					<div className="modal-info">

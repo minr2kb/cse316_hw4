@@ -4,8 +4,8 @@ const defaultHeaders = {
 	},
 };
 
-export const getUserById = userId => {
-	return fetch(`/api/users/${userId}`, {
+export const getUser = () => {
+	return fetch(`/api/user`, {
 		...defaultHeaders,
 	})
 		.then(checkStatus)
@@ -13,15 +13,15 @@ export const getUserById = userId => {
 };
 
 export const updateUser = user => {
-	return fetch(`/api/users/${user._id}`, {
+	return fetch(`/api/user`, {
 		...defaultHeaders,
 		method: "PUT",
 		body: JSON.stringify(user),
 	}).then(checkStatus);
 };
 
-export const deleteUserById = userId => {
-	return fetch(`/api/users/${userId}`, {
+export const deleteUser = () => {
+	return fetch(`/api/user`, {
 		...defaultHeaders,
 		method: "DELETE",
 	})
@@ -38,9 +38,12 @@ export const register = (name, email, password) => {
 			email: email,
 			password: password,
 		}),
-	})
-		.then(checkStatus)
-		.then(parseJSON);
+	}).then(response => {
+		if (response.status >= 500) {
+			return "duplicated";
+		}
+		return "success";
+	});
 };
 
 export const login = (email, password) => {
