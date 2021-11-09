@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import defaultUser from "../../assets/image/defaultUser.jpeg";
 import { useRecoilState } from "recoil";
 import {
@@ -55,11 +54,9 @@ const Sidebar = () => {
 	};
 
 	const viewNote = (idx, noteId) => {
-		console.log(queriedNoteList);
 		console.log(`view: ${idx}`);
 		setCurrentNoteIdx(() => idx);
 		setCurrentNote(() => noteId);
-		console.log(noteId);
 		setIsEditMode(() => true);
 	};
 

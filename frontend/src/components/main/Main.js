@@ -5,6 +5,7 @@ import {
 	noteListState,
 	queriedNoteListState,
 	currentNoteIdxState,
+	currentNoteState,
 	windowDimensionsState,
 	isEditModeState,
 	searchTargetState,
@@ -19,6 +20,7 @@ const Main = () => {
 		useRecoilState(queriedNoteListState);
 	const [currentNoteIdx, setCurrentNoteIdx] =
 		useRecoilState(currentNoteIdxState);
+	const [currentNote, setCurrentNote] = useRecoilState(currentNoteState);
 	const [isEditMode, setIsEditMode] = useRecoilState(isEditModeState);
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
@@ -64,7 +66,8 @@ const Main = () => {
 				...noteList.slice(0, currentNoteIdx),
 				...noteList.slice(currentNoteIdx + 1, noteList.length),
 			]);
-			setCurrentNoteIdx(0);
+			setCurrentNoteIdx(() => 0);
+			setCurrentNote(() => newNote._id);
 		});
 	};
 
@@ -75,15 +78,11 @@ const Main = () => {
 			setNoteList([response, ...noteList]);
 			setQueriedNoteList([response, ...noteList]);
 			setCurrentNoteIdx(() => 0);
+			setCurrentNote(() => response._id);
 		});
 	};
 
-	const offFocus = () => {
-		setCurrentNoteIdx(current => -1);
-	};
-
 	useEffect(() => {
-		console.log("UseEffect");
 		let queriedList = noteList.filter((note, idx) =>
 			note.text
 				.replace(/[ \n]/g, "")

@@ -6,7 +6,7 @@ import {
 	showSignupState,
 	currentUserState,
 } from "../../recoilStates";
-import { register, getUser } from "../../api/client";
+import { register } from "../../api/client";
 import { Close } from "@mui/icons-material";
 
 const Signup = () => {

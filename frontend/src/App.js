@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import {
 	noteListState,
@@ -11,7 +11,7 @@ import {
 	currentUserState,
 } from "./recoilStates";
 
-import { login, getUser, getNotes } from "./api/client";
+import { getUser, getNotes } from "./api/client";
 import Sidebar from "./components/sidebar/Sidebar";
 import Main from "./components/main/Main";
 import Modal from "./components/modal/Modal";
