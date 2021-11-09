@@ -2,28 +2,22 @@ const { atom } = require("recoil");
 
 export const noteListState = atom({
 	key: "noteListState",
-	// default: [
-	// 	{
-	// 		content:
-	// 			"# Example Note\nHello I'm Kyungbae Min.\nI am taking **CSE316**.",
-	// 		date: "8/17/2021",
-	// 	},
-	// 	{
-	// 		content:
-	// 			"I have a pen, I have an apple, Uh! Apple pen! I have a pen, I have pineapple.. Uh! pineapple pen!",
-	// 		date: "8/10/2021",
-	// 	},
-	// 	{
-	// 		content: "Hello Cleopatra\nThe thinnest potato chip in the world",
-	// 		date: "7/15/2021",
-	// 	},
-	// ],
 	default: [],
+});
+
+export const queriedNoteListState = atom({
+	key: "queriedNoteListState",
+	default: [],
+});
+
+export const currentNoteIdxState = atom({
+	key: "currentNoteIdxState",
+	default: -1,
 });
 
 export const currentNoteState = atom({
 	key: "currentNoteState",
-	default: -1,
+	default: "",
 });
 
 export const currentUserState = atom({

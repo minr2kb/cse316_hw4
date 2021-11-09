@@ -3,7 +3,8 @@ import "../../App.css";
 import { useRecoilState } from "recoil";
 import {
 	noteListState,
-	currentNoteState,
+	queriedNoteListState,
+	currentNoteIdxState,
 	windowDimensionsState,
 	isEditModeState,
 	searchTargetState,
@@ -14,7 +15,10 @@ import { NoteAdd, ArrowBack } from "@mui/icons-material";
 
 const Main = () => {
 	const [noteList, setNoteList] = useRecoilState(noteListState);
-	const [currentNote, setCurrentNote] = useRecoilState(currentNoteState);
+	const [queriedNoteList, setQueriedNoteList] =
+		useRecoilState(queriedNoteListState);
+	const [currentNoteIdx, setCurrentNoteIdx] =
+		useRecoilState(currentNoteIdxState);
 	const [isEditMode, setIsEditMode] = useRecoilState(isEditModeState);
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
@@ -34,28 +38,33 @@ const Main = () => {
 
 	const handleText = e => {
 		setText(e.target.value);
-		debouncedSave(noteList, currentNote, e.target.value);
+		debouncedSave(noteList, currentNoteIdx, e.target.value);
 	};
 
 	const debouncedSave = useCallback(
-		debounce((noteList, currentNote, newText) =>
-			editNote(noteList, currentNote, newText)
+		debounce((noteList, currentNoteIdx, newText) =>
+			editNote(noteList, currentNoteIdx, newText)
 		),
 		[]
 	);
 
-	const editNote = (noteList, currentNote, newText) => {
+	const editNote = (noteList, currentNoteIdx, newText) => {
 		const newNote = {
-			...noteList[currentNote],
+			...noteList[currentNoteIdx],
 			text: newText,
 		};
 		updateNote(newNote).then(response => {
 			setNoteList(notes => [
 				newNote,
-				...noteList.slice(0, currentNote),
-				...noteList.slice(currentNote + 1, noteList.length),
+				...noteList.slice(0, currentNoteIdx),
+				...noteList.slice(currentNoteIdx + 1, noteList.length),
 			]);
-			setCurrentNote(0);
+			setQueriedNoteList(notes => [
+				newNote,
+				...noteList.slice(0, currentNoteIdx),
+				...noteList.slice(currentNoteIdx + 1, noteList.length),
+			]);
+			setCurrentNoteIdx(0);
 		});
 	};
 
@@ -64,12 +73,13 @@ const Main = () => {
 		setSearchTarget(() => "");
 		createNote(newNote).then(response => {
 			setNoteList([response, ...noteList]);
-			setCurrentNote(() => 0);
+			setQueriedNoteList([response, ...noteList]);
+			setCurrentNoteIdx(() => 0);
 		});
 	};
 
 	const offFocus = () => {
-		setCurrentNote(current => -1);
+		setCurrentNoteIdx(current => -1);
 	};
 
 	useEffect(() => {
@@ -80,8 +90,8 @@ const Main = () => {
 				.toLowerCase()
 				.includes(searchTarget.replace(/[ \n]/g, "").toLowerCase())
 		);
-		setText(queriedList[currentNote]?.text);
-	}, [currentNote, noteList, searchTarget]);
+		setText(queriedList[currentNoteIdx]?.text);
+	}, [currentNoteIdx, noteList, searchTarget]);
 
 	return (
 		<div className="main-body">
@@ -102,10 +112,10 @@ const Main = () => {
 				<textarea
 					className="main-content"
 					id="note"
-					readOnly={currentNote < 0}
+					readOnly={currentNoteIdx < 0}
 					value={text || ""}
 					placeholder={
-						currentNote >= 0 ? "Start to write a new note!" : ""
+						currentNoteIdx >= 0 ? "Start to write a new note!" : ""
 					}
 					onChange={handleText}
 					// onKeyUp={editNote}

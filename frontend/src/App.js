@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
 	noteListState,
+	queriedNoteListState,
 	windowDimensionsState,
 	isEditModeState,
 	showModalState,
@@ -27,6 +28,8 @@ function getWindowDimensions() {
 
 function App() {
 	const [noteList, setNoteList] = useRecoilState(noteListState);
+	const [queriedNoteList, setQueriedNoteList] =
+		useRecoilState(queriedNoteListState);
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
 	);
@@ -40,7 +43,9 @@ function App() {
 			if (response) {
 				setCurrentUser(() => response);
 				getNotes().then(response => {
-					setNoteList(() => response.reverse());
+					let notes = response.reverse();
+					setNoteList(() => notes);
+					setQueriedNoteList(() => notes);
 				});
 			}
 		});

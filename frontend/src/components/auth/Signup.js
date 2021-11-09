@@ -116,6 +116,7 @@ const Signup = () => {
 								placeholder="Name"
 								value={name}
 								onChange={editName}
+								type="text"
 							/>
 						</div>
 					</div>
