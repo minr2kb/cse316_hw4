@@ -24,15 +24,6 @@ export const updateUser = user => {
 	}).then(checkStatus);
 };
 
-export const deleteUser = () => {
-	return fetch(`/api/user`, {
-		...defaultHeaders,
-		method: "DELETE",
-	})
-		.then(checkStatus)
-		.then(parseJSON);
-};
-
 export const register = (name, email, password) => {
 	return fetch(`/api/register`, {
 		...defaultHeaders,
@@ -105,6 +96,19 @@ export const deleteNoteById = noteId => {
 	return fetch(`/api/notes/${noteId}`, {
 		...defaultHeaders,
 		method: "DELETE",
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+export const uploadImageToCloudinaryAPIMethod = formData => {
+	const cloudName = "ddrzspgjy"; // TODO: Write in your own Cloudinary account
+	return fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+		// We do NOT want to set the default headers – the formData will automatically set the
+		// headers to tell the server of the data type (which is different than the JSON
+		// standard all the other API calls have been sending
+		method: "POST",
+		body: formData,
 	})
 		.then(checkStatus)
 		.then(parseJSON);

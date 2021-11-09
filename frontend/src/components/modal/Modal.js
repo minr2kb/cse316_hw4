@@ -7,7 +7,11 @@ import {
 	showModalState,
 	currentUserState,
 } from "../../recoilStates";
-import { updateUser, logout } from "../../api/client";
+import {
+	updateUser,
+	logout,
+	uploadImageToCloudinaryAPIMethod,
+} from "../../api/client";
 import { Close } from "@mui/icons-material";
 
 const Modal = () => {
@@ -21,27 +25,82 @@ const Modal = () => {
 	const [email, setEmail] = useState("");
 	const [location, setLocation] = useState("");
 	const [changed, setChanged] = useState(false);
+	const [imageURL, setImageURL] = useState(null);
+	const [file, setFile] = useState(null);
+	const [error, setError] = useState(null);
+	const [loadingIndicator, setLoadingIndicator] = useState(null);
 
 	const submit = () => {
 		if (name.length > 0 && location.length > 0) {
-			var updatedUser = {
-				...currentUser,
-				name: name,
-				location: location,
-				profile_url: "",
-			};
-			updateUser(updatedUser).then(response => {
-				if (response.ok) {
-					setCurrentUser(updatedUser);
-					window.alert("Saved all changes");
-				} else {
-					window.alert("Failed to save changes");
-				}
-				setShowModal(show => false);
-			});
+			if (file) {
+				setError(null);
+				setLoadingIndicator("Uploading image...");
+				const formData = new FormData();
+				const unsignedUploadPreset = "g53pwqfw";
+				formData.append("file", file);
+				formData.append("upload_preset", unsignedUploadPreset);
+				// formData.append("public_id", currentUser._id);
+				uploadImageToCloudinaryAPIMethod(formData).then(response => {
+					setLoadingIndicator("Saving...");
+					var updatedUser = {
+						...currentUser,
+						name: name,
+						location: location,
+						profile_url: response.url,
+					};
+					updateUser(updatedUser).then(response => {
+						setLoadingIndicator(null);
+						if (response.ok) {
+							setCurrentUser(updatedUser);
+							window.alert("Saved all changes");
+						} else {
+							window.alert("Failed to save changes");
+						}
+						setShowModal(() => false);
+					});
+				});
+			} else {
+				setError(null);
+				setLoadingIndicator("Saving...");
+				var updatedUser = {
+					...currentUser,
+					name: name,
+					location: location,
+					profile_url: "",
+				};
+				updateUser(updatedUser).then(response => {
+					setLoadingIndicator(null);
+					if (response.ok) {
+						setCurrentUser(updatedUser);
+						window.alert("Saved all changes");
+					} else {
+						window.alert("Failed to save changes");
+					}
+					setShowModal(() => false);
+				});
+			}
 		} else {
-			window.alert("Cannot save the empty information");
+			setError("Cannot save the empty information");
 		}
+	};
+
+	// const submit
+
+	const handleImageSelected = event => {
+		console.log("New File Selected");
+		if (event.target.files && event.target.files[0]) {
+			const selectedFile = event.target.files[0];
+			const fileURL = URL.createObjectURL(selectedFile);
+			setFile(selectedFile);
+			setImageURL(fileURL);
+			setChanged(true);
+		}
+	};
+
+	const removeImage = () => {
+		setChanged(true);
+		setImageURL(null);
+		setFile(null);
 	};
 
 	const signout = () => {
@@ -65,10 +124,10 @@ const Modal = () => {
 		setChanged(true);
 	};
 
-	const editEmail = e => {
-		setEmail(e.target.value);
-		setChanged(true);
-	};
+	// const editEmail = e => {
+	// 	setEmail(e.target.value);
+	// 	setChanged(true);
+	// };
 
 	const editLocation = e => {
 		setLocation(e.target.value);
@@ -79,6 +138,7 @@ const Modal = () => {
 		setName(currentUser?.name);
 		setEmail(currentUser?.email);
 		setLocation(currentUser?.location);
+		setImageURL(currentUser?.profile_url);
 	}, []);
 
 	return (
@@ -107,12 +167,22 @@ const Modal = () => {
 						/>
 					</div>
 					<div className="modal-image">
-						<img
-							src={currentUser.img || defaultUser}
-							alt="profile"
-						/>
-						<div className="selectable-text">Choose New Image</div>
-						<div className="selectable-text">Remove Image</div>
+						<img src={imageURL || defaultUser} alt="profile" />
+						<label>
+							<input
+								type="file"
+								name="image"
+								accept="image/*"
+								id="cloudinary"
+								onChange={handleImageSelected}
+							/>
+							<div className="selectable-text">
+								Choose New Image
+							</div>
+						</label>
+						<div className="selectable-text" onClick={removeImage}>
+							Remove Image
+						</div>
 					</div>
 					<div className="modal-info">
 						<div>Name</div>
@@ -132,7 +202,7 @@ const Modal = () => {
 								className="modal-input"
 								placeholder="Email"
 								value={email}
-								onChange={editEmail}
+								// onChange={editEmail}
 								type="email"
 								readOnly={true}
 							/>
@@ -149,6 +219,28 @@ const Modal = () => {
 							/>
 						</div>
 					</div>
+					{error && (
+						<div
+							style={{
+								color: "red",
+								fontWeight: 600,
+								fontSize: "large",
+							}}
+						>
+							{error}
+						</div>
+					)}
+					{loadingIndicator && (
+						<div
+							style={{
+								color: "green",
+								fontWeight: 600,
+								fontSize: "large",
+							}}
+						>
+							{loadingIndicator}
+						</div>
+					)}
 
 					<div className="modal-footer">
 						<input

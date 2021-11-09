@@ -140,6 +140,10 @@ input[type="submit"] {
 	cursor: pointer;
 }
 
+input[type="file"] {
+	display: none;
+}
+
 textarea:focus,
 input:focus {
 	outline: none;

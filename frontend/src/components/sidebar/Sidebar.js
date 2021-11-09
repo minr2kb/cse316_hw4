@@ -95,7 +95,7 @@ const Sidebar = () => {
 			<div className="row side-header">
 				<img
 					id="profile"
-					src={currentUser.img || defaultUser}
+					src={currentUser.profile_url || defaultUser}
 					alt="profile"
 					onClick={() => setShowModal(show => true)}
 				/>
