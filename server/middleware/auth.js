@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const Note = require("../models/Note");
 const { wrapAsync } = require("../utils/helper");
 
 module.exports.requireLogin = (req, res, next) => {

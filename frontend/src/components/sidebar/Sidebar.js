@@ -1,9 +1,10 @@
 import React from "react";
-import { useState } from "react";
 import defaultUser from "../../assets/image/defaultUser.jpeg";
 import { useRecoilState } from "recoil";
 import {
 	noteListState,
+	queriedNoteListState,
+	currentNoteIdxState,
 	currentNoteState,
 	windowDimensionsState,
 	isEditModeState,
@@ -11,11 +12,15 @@ import {
 	currentUserState,
 	searchTargetState,
 } from "../../recoilStates";
-import { deleteNoteById } from "../../api/noteAPI";
+import { deleteNoteById, getNotes } from "../../api/client";
 import { Delete, Search } from "@mui/icons-material";
 
 const Sidebar = () => {
 	const [noteList, setNoteList] = useRecoilState(noteListState);
+	const [queriedNoteList, setQueriedNoteList] =
+		useRecoilState(queriedNoteListState);
+	const [currentNoteIdx, setCurrentNoteIdx] =
+		useRecoilState(currentNoteIdxState);
 	const [currentNote, setCurrentNote] = useRecoilState(currentNoteState);
 	const [windowDimensions, setWindowDimensions] = useRecoilState(
 		windowDimensionsState
@@ -33,21 +38,31 @@ const Sidebar = () => {
 				.toLowerCase()
 				.includes(e.target.value.replace(/ /g, "").toLowerCase())
 		);
+		setQueriedNoteList(() => queriedList);
 		if (queriedList.length > 0) {
-			viewNote(0);
+			const idx = queriedList.findIndex(
+				(element, index, arr) => element._id == currentNote
+			);
+			if (idx > 0) {
+				viewNote(idx, queriedList[idx]?._id);
+			} else {
+				viewNote(0, queriedList[0]?._id);
+			}
 		} else {
 			offFocus();
 		}
 	};
 
-	const viewNote = idx => {
+	const viewNote = (idx, noteId) => {
 		console.log(`view: ${idx}`);
-		setCurrentNote(() => idx);
+		setCurrentNoteIdx(() => idx);
+		setCurrentNote(() => noteId);
 		setIsEditMode(() => true);
 	};
 
 	const offFocus = () => {
-		setCurrentNote(() => -1);
+		setCurrentNoteIdx(() => -1);
+		setCurrentNote(() => "");
 	};
 
 	const formatDateTime = str => {
@@ -67,23 +82,38 @@ const Sidebar = () => {
 	};
 
 	const deleteNote = () => {
-		if (currentNote >= 0) {
-			let queriedList = noteList.filter((note, idx) =>
-				note.text
-					.replace(/[ \n]/g, "")
-					.toLowerCase()
-					.includes(searchTarget.replace(/[ \n]/g, "").toLowerCase())
-			);
-			deleteNoteById(queriedList[currentNote]._id).then(response => {
-				setNoteList(notes =>
-					noteList.filter(
-						note => note._id !== queriedList[currentNote]._id
-					)
-				);
-				if (currentNote > queriedList.length - 2 && currentNote > -1) {
-					viewNote(currentNote - 1);
+		if (currentNoteIdx >= 0) {
+			deleteNoteById(queriedNoteList[currentNoteIdx]._id).then(
+				response => {
+					getNotes().then(response => {
+						let notes = response.reverse();
+						setNoteList(() => notes);
+						let queriedList = notes.filter((note, idx) =>
+							note.text
+								.replace(/ /g, "")
+								.toLowerCase()
+								.includes(
+									searchTarget.replace(/ /g, "").toLowerCase()
+								)
+						);
+						setQueriedNoteList(() => queriedList);
+						if (
+							currentNoteIdx > queriedNoteList.length - 2 &&
+							currentNoteIdx > -1
+						) {
+							viewNote(
+								currentNoteIdx - 1,
+								queriedList[currentNoteIdx - 1]?._id
+							);
+						} else {
+							viewNote(
+								currentNoteIdx,
+								queriedList[currentNoteIdx]?._id
+							);
+						}
+					});
 				}
-			});
+			);
 		}
 	};
 
@@ -95,7 +125,7 @@ const Sidebar = () => {
 			<div className="row side-header">
 				<img
 					id="profile"
-					src={currentUser.img || defaultUser}
+					src={currentUser.profile_url || defaultUser}
 					alt="profile"
 					onClick={() => setShowModal(show => true)}
 				/>
@@ -113,41 +143,32 @@ const Sidebar = () => {
 				/>
 			</div>
 			<div id="note-list" className="side-note-list">
-				{noteList
-					.filter(note =>
-						note.text
-							.replace(/[ \n]/g, "")
-							.toLowerCase()
-							.includes(
-								searchTarget.replace(/[ \n]/g, "").toLowerCase()
-							)
-					)
-					.map((note, idx) => (
-						<div
-							className={
-								"row side-note" +
-								(currentNote === idx ? " selected" : "")
-							}
-							key={idx}
-							onClick={() => viewNote(idx)}
-						>
-							<span className="title" id="title">
-								{note.text.length > 0
-									? note.text
-											.split("\n")
-											.filter(
-												line =>
-													line.replace(/[ ]/g, "")
-														.length > 0
-											)[0]
-									: "New Note"}
-							</span>
-							<span style={{ fontSize: "x-small" }}>
-								{formatDateTime(note.lastUpdatedDate)}
-								{/* {note.lastUpdatedDate} */}
-							</span>
-						</div>
-					))}
+				{queriedNoteList.map((note, idx) => (
+					<div
+						className={
+							"row side-note" +
+							(currentNoteIdx === idx ? " selected" : "")
+						}
+						key={idx}
+						onClick={() => viewNote(idx, queriedNoteList[idx]?._id)}
+					>
+						<span className="title" id="title">
+							{note.text.length > 0
+								? note.text
+										.split("\n")
+										.filter(
+											line =>
+												line.replace(/[ ]/g, "")
+													.length > 0
+										)[0]
+								: "New Note"}
+						</span>
+						<span style={{ fontSize: "x-small" }}>
+							{formatDateTime(note.lastUpdatedDate)}
+							{/* {note.lastUpdatedDate} */}
+						</span>
+					</div>
+				))}
 				<div style={{ height: "100%" }} onClick={offFocus}></div>
 			</div>
 		</div>
