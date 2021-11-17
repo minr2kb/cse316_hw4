@@ -1,5 +1,14 @@
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const Note = require("./models/Note");
+// const User = require("./models/User");
+
+// const app = express();
+// const bodyParser = require("body-parser");
+// app.use(bodyParser.json());
+
 const express = require("express");
-const notesRoutes = require("./routes/notes");
+const libraryRoutes = require("./routes/notes");
 const userRoutes = require("./routes/users");
 
 const app = express();
@@ -10,14 +19,12 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo"); // MongoDB session store
 
-var dbURL =
-	process.env.MONGO_URL ||
-	"mongodb+srv://admin:admin@mycluster.lr4aw.mongodb.net/MyNote?retryWrites=true&w=majority";
+var dbURL = process.env.MONGO_URL || "mongodb://localhost:27017/MyNote";
 mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-const sessionSecret = process.env.SESSION_SECRET || "KyungbaeMin";
+const sessionSecret = process.env.SESSION_SECRET;
 
 const store = MongoStore.create({
 	mongoUrl: dbURL,
@@ -26,7 +33,7 @@ const store = MongoStore.create({
 });
 
 // Changing this setting to avoid a Mongoose deprecation warning:
-// mongoose.set("useFindAndModify", false);
+mongoose.set("useFindAndModify", false);
 
 const sessionConfig = {
 	store,
@@ -51,7 +58,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api", userRoutes);
-app.use("/api", notesRoutes);
+app.use("/api", libraryRoutes);
 
 app.use((err, req, res, next) => {
 	console.log("Error handling called");

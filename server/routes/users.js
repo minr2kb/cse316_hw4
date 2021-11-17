@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const User = require("../models/User");
+const User = require("../models/user");
 const { wrapAsync } = require("../utils/helper");
 const { requireLogin } = require("../middleware/auth");
 const multer = require("multer");
@@ -22,7 +22,7 @@ router.post(
 		req.session.userId = user._id;
 		// Note: this is returning the entire user object to demo, which will include the hashed and salted password.
 		// In practice, you wouldn't typically do this – a success status would suffice, or perhaps just the user id.
-		res.sendStatus(204);
+		res.json(user);
 	})
 );
 
@@ -33,7 +33,6 @@ router.post(
 		const user = await User.findAndValidate(email, password);
 		if (user) {
 			req.session.userId = user._id;
-
 			res.sendStatus(204);
 		} else {
 			res.sendStatus(401);
@@ -50,10 +49,10 @@ router.post(
 );
 
 router.put(
-	"/user",
+	"/api/users/:id",
 	requireLogin,
 	wrapAsync(async function (req, res) {
-		const id = req.session.userId;
+		const id = req.params.id;
 		console.log(
 			"PUT with id: " + id + ", body: " + JSON.stringify(req.body)
 		);
@@ -71,10 +70,10 @@ router.put(
 );
 
 router.delete(
-	"/user",
+	"/api/users/:id",
 	requireLogin,
 	wrapAsync(async function (req, res) {
-		const id = req.session.userId;
+		const id = req.params.id;
 		const result = await User.findByIdAndDelete(id);
 		console.log("Deleted successfully: " + result);
 		res.json(result);
@@ -82,9 +81,9 @@ router.delete(
 );
 
 router.get(
-	"/user",
+	"/api/users/:id",
 	wrapAsync(async function (req, res, next) {
-		const id = req.session.userId;
+		let id = req.params.id;
 		if (mongoose.isValidObjectId(id)) {
 			const user = await User.findById(id);
 			if (user) {

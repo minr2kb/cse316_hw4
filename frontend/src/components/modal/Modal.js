@@ -7,11 +7,7 @@ import {
 	showModalState,
 	currentUserState,
 } from "../../recoilStates";
-import {
-	updateUser,
-	logout,
-	uploadImageToCloudinaryAPIMethod,
-} from "../../api/client";
+import { updateUser } from "../../api/userAPI";
 import { Close } from "@mui/icons-material";
 
 const Modal = () => {
@@ -25,90 +21,50 @@ const Modal = () => {
 	const [email, setEmail] = useState("");
 	const [location, setLocation] = useState("");
 	const [changed, setChanged] = useState(false);
-	const [imageURL, setImageURL] = useState(null);
-	const [file, setFile] = useState(null);
-	const [error, setError] = useState(null);
-	const [loadingIndicator, setLoadingIndicator] = useState(null);
+
+	const isEmail = email => {
+		const emailRegex =
+			/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+		return emailRegex.test(email);
+	};
 
 	const submit = () => {
-		if (name.length > 0 && location.length > 0) {
-			if (file) {
-				setError(null);
-				setLoadingIndicator("Uploading image...");
-				const formData = new FormData();
-				const unsignedUploadPreset = "g53pwqfw";
-				formData.append("file", file);
-				formData.append("upload_preset", unsignedUploadPreset);
-				// formData.append("public_id", currentUser._id);
-				uploadImageToCloudinaryAPIMethod(formData).then(response => {
-					setLoadingIndicator("Saving...");
-					var updatedUser = {
-						...currentUser,
-						name: name,
-						location: location,
-						profile_url: response.url,
-					};
-					updateUser(updatedUser).then(response => {
-						setLoadingIndicator(null);
-						if (response.ok) {
-							setCurrentUser(updatedUser);
-							window.alert("Saved all changes");
-						} else {
-							window.alert("Failed to save changes");
-						}
-						setShowModal(() => false);
-					});
-				});
-			} else {
-				setError(null);
-				setLoadingIndicator("Saving...");
+		if (name.length > 0 && email.length > 0 && location.length > 0) {
+			if (isEmail(email)) {
 				var updatedUser = {
 					...currentUser,
 					name: name,
+					email: email,
 					location: location,
-					profile_url: "",
 				};
 				updateUser(updatedUser).then(response => {
-					setLoadingIndicator(null);
 					if (response.ok) {
 						setCurrentUser(updatedUser);
-						window.alert("Saved all changes");
+						// window.alert("Saved all changes");
 					} else {
-						window.alert("Failed to save changes");
+						window.alert("Could not save changes");
 					}
-					setShowModal(() => false);
+					setShowModal(show => false);
 				});
+			} else {
+				window.alert("Email format is invalid");
 			}
 		} else {
-			setError("Cannot save the empty information");
+			window.alert("Cannot save the empty information");
 		}
 	};
 
-	// const submit
-
-	const handleImageSelected = event => {
-		console.log("New File Selected");
-		if (event.target.files && event.target.files[0]) {
-			const selectedFile = event.target.files[0];
-			const fileURL = URL.createObjectURL(selectedFile);
-			setFile(selectedFile);
-			setImageURL(fileURL);
-			setChanged(true);
-		}
-	};
-
-	const removeImage = () => {
-		setChanged(true);
-		setImageURL(null);
-		setFile(null);
-	};
-
-	const signout = () => {
-		if (window.confirm("Do you want to logout?")) {
-			logout().then(response => {
-				window.location.reload();
-			});
-		}
+	const logout = () => {
+		// if (window.confirm("Do you want to logout?")) {
+		// 	window.alert("Logged out");
+		// 	setShowModal(show => false);
+		// 	setName("");
+		// 	setEmail("");
+		// 	setLocation("");
+		// 	localStorage.removeItem("profile");
+		// }
+		window.alert("Not implemented yet");
 	};
 
 	const closeModal = () => {
@@ -116,7 +72,7 @@ const Modal = () => {
 			window.confirm("Do you want to save the changes before closing?") &&
 				submit();
 		}
-		setShowModal(() => false);
+		setShowModal(show => false);
 	};
 
 	const editName = e => {
@@ -124,10 +80,10 @@ const Modal = () => {
 		setChanged(true);
 	};
 
-	// const editEmail = e => {
-	// 	setEmail(e.target.value);
-	// 	setChanged(true);
-	// };
+	const editEmail = e => {
+		setEmail(e.target.value);
+		setChanged(true);
+	};
 
 	const editLocation = e => {
 		setLocation(e.target.value);
@@ -138,7 +94,6 @@ const Modal = () => {
 		setName(currentUser?.name);
 		setEmail(currentUser?.email);
 		setLocation(currentUser?.location);
-		setImageURL(currentUser?.profile_url);
 	}, []);
 
 	return (
@@ -161,28 +116,15 @@ const Modal = () => {
 						<span style={{ fontWeight: 900, fontSize: "larger" }}>
 							Edit Profile
 						</span>
-						<Close
-							onClick={closeModal}
-							style={{ cursor: "pointer" }}
-						/>
+						<Close onClick={closeModal} />
 					</div>
 					<div className="modal-image">
-						<img src={imageURL || defaultUser} alt="profile" />
-						<label>
-							<input
-								type="file"
-								name="image"
-								accept="image/*"
-								id="cloudinary"
-								onChange={handleImageSelected}
-							/>
-							<div className="selectable-text">
-								Choose New Image
-							</div>
-						</label>
-						<div className="selectable-text" onClick={removeImage}>
-							Remove Image
-						</div>
+						<img
+							src={currentUser.img || defaultUser}
+							alt="profile"
+						/>
+						<div className="selectable-text">Choose New Image</div>
+						<div className="selectable-text">Remove Image</div>
 					</div>
 					<div className="modal-info">
 						<div>Name</div>
@@ -202,9 +144,8 @@ const Modal = () => {
 								className="modal-input"
 								placeholder="Email"
 								value={email}
-								// onChange={editEmail}
+								onChange={editEmail}
 								type="email"
-								readOnly={true}
 							/>
 						</div>
 					</div>
@@ -219,28 +160,6 @@ const Modal = () => {
 							/>
 						</div>
 					</div>
-					{error && (
-						<div
-							style={{
-								color: "red",
-								fontWeight: 600,
-								fontSize: "large",
-							}}
-						>
-							{error}
-						</div>
-					)}
-					{loadingIndicator && (
-						<div
-							style={{
-								color: "green",
-								fontWeight: 600,
-								fontSize: "large",
-							}}
-						>
-							{loadingIndicator}
-						</div>
-					)}
 
 					<div className="modal-footer">
 						<input
@@ -250,7 +169,7 @@ const Modal = () => {
 							type="submit"
 						/>
 
-						<div className="selectable-text" onClick={signout}>
+						<div className="selectable-text" onClick={logout}>
 							Logout
 						</div>
 					</div>

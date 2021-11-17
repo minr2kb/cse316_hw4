@@ -140,10 +140,6 @@ input[type="submit"] {
 	cursor: pointer;
 }
 
-input[type="file"] {
-	display: none;
-}
-
 textarea:focus,
 input:focus {
 	outline: none;
@@ -167,7 +163,7 @@ input:focus {
 
 .modal {
 	background-color: rgb(255, 255, 255);
-	border-radius: 15px;
+	border-radius: 20px;
 	box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
 }
 
@@ -187,7 +183,7 @@ input:focus {
 
 .modal-inner {
 	width: 350px;
-	padding: 10px;
+	padding: 15px;
 }
 
 .modal-header {
@@ -212,7 +208,7 @@ input:focus {
 	position: relative;
 	font-size: large;
 	font-weight: 600;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
 
 .modal-input {
@@ -228,7 +224,6 @@ input:focus {
 	align-items: center;
 	font-weight: 600;
 	margin-top: 15px;
-	margin-bottom: 10px;
 }
 
 .save-button {
@@ -236,64 +231,16 @@ input:focus {
 	font-weight: 400;
 	background-color: var(--action-color);
 	border: none;
-	padding-top: 12px;
-	padding-bottom: 12px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 	padding-left: 25px;
 	padding-right: 25px;
-	border-radius: 10px;
+	border-radius: 12px;
 }
-
-.green-button {
-	color: var(--action-text-color);
-	font-weight: 400;
-	background-color: rgb(67, 167, 33);
-	border: none;
-	padding-top: 12px;
-	padding-bottom: 12px;
-	padding-left: 25px;
-	padding-right: 25px;
-	border-radius: 10px;
-}
-
-.login-button {
-	color: var(--action-text-color);
-	font-weight: 400;
-	background-color: var(--action-color);
-	border: none;
-	padding-top: 12px;
-	padding-bottom: 12px;
-	padding-left: 25px;
-	padding-right: 25px;
-	border-radius: 10px;
-	width: 100%;
-}
-
 .selectable-text {
 	cursor: pointer;
 }
 
 .selectable-text:hover {
 	text-decoration: underline;
-}
-
-.login-background {
-	display: flex;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	background-color: rgb(243, 241, 241);
-}
-
-.login {
-	background-color: rgb(255, 255, 255);
-	border-radius: 15px;
-}
-
-.login-inner {
-	width: 350px;
-	padding: 10px;
-	padding-top: 15px;
 }

@@ -1,4 +1,4 @@
-# CSE316 HW4
+# CSE316 HW3
 
 -   Name: Kyungbae Min
 -   Student ID: 112986171
@@ -13,6 +13,30 @@ Deployed on MongoDB Atlas
 
 -   On Compass: `mongodb://localhost:27017/MyNote`
 
+### REST APIs
+
+`/api/notes`
+
+-   GET
+-   POST `{name:String, email:String, location:String, img:String}`
+
+`/api/notes/:id`
+
+-   GET
+-   PUT `{name:String, email:String, location:String}`
+-   DELETE
+
+`/api/users/`
+
+-   GET
+-   POST `{Text:String, lastUpdatedDate:String}`
+
+`/api/users/:id`
+
+-   GET
+-   PUT `{Text:String, lastUpdatedDate:String}`
+-   DELETE
+
 ## How to start
 
 1. `yarn install` or `npm install` to install packages
@@ -21,7 +45,7 @@ Deployed on MongoDB Atlas
 ## Structure
 
 ```
-cse316-hw4
+cse316-hw3
 ├── frontend/
 │   ├── public/             # static files
 │   │   ├── index.html      # html template
@@ -29,11 +53,8 @@ cse316-hw4
 │   │   └── robots.txt
 │   │
 │   ├── src/                # project root
-│   │   ├── api/            # APIs
-│   │   │   └── client.js
 │   │   ├── assets/         # images
 │   │   ├── components/     # layout containers
-│   │   │   ├── auth/       # login & signup form
 │   │   │   ├── main/       # main note editter
 │   │   │   ├── modal/      # user info modal
 │   │   │   └── sidebar/    # side note list
@@ -47,25 +68,12 @@ cse316-hw4
 │   └── package.json
 │
 └── server/
-    ├── middleware/         # Server middlewares
-    │   └── auth.js
-    │
     ├── models/             # DB schemes
     │   ├── Note.js
     │   └── User.js
     │
-    ├── routes/             # API routes
-    │   ├── notes.js
-    │   └── users.js
-    │
-    ├── utils/              # helper methods
-    │   ├── helper.js
-    │   └── validators.js
-    │
     ├── app.js              # Express server w/ mongoose
-    ├── server.js           # Server execute
     ├── populatedb.js       # Populating db
-    │
     ├── ...
     └── package.json
 

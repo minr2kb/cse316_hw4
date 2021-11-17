@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const Note = require("../models/Note");
-
+const mongoose = require("mongoose");
+const Author = require("../models/author");
+const Book = require("../models/book");
+const BookInstance = require("../models/bookinstance");
 const { requireLogin, isCreator } = require("../middleware/auth");
 const { wrapAsync } = require("../utils/helper");
 
@@ -27,7 +29,7 @@ const upload = multer({ dest: "uploads/" });
 // Using an async function to be able to use the "await" functionality below, which makes
 // the find command run synchronously.
 router.get(
-	"/notes",
+	"/api/notes",
 	requireLogin,
 	wrapAsync(async function (req, res) {
 		const notes = await Note.find({ creator: req.session.userId }).sort({
@@ -41,7 +43,7 @@ router.get(
 // the logged in user to be that agent, otherwise the request is denied.
 
 router.delete(
-	"/notes/:id",
+	"/api/notes/:id",
 	isCreator,
 	wrapAsync(async function (req, res) {
 		const id = req.params.id;
@@ -52,7 +54,7 @@ router.delete(
 );
 
 router.put(
-	"/notes/:id",
+	"/api/notes/:id",
 	isCreator,
 	wrapAsync(async function (req, res) {
 		const id = req.params.id;
@@ -73,7 +75,7 @@ router.put(
 
 // The React app does not call the below methods, but these are further examples of using Express
 router.post(
-	"/notes",
+	"/api/notes",
 	requireLogin,
 	wrapAsync(async function (req, res) {
 		console.log("Posted with body: " + JSON.stringify(req.body));
